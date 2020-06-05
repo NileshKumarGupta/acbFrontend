@@ -41,7 +41,7 @@ saveButton.addEventListener("click", () => {
   });
   // console.log(toSendData);
   axios
-    .put("http://127.0.0.1:3000/student/" + currentID, {
+    .put("https://acbdata.herokuapp.com/student/" + currentID, {
       id: currentID,
       tt: toSendData,
     })
@@ -80,7 +80,7 @@ const removeFromTT = (csNr, collitp) => {
 
   collitp.remove();
   axios
-    .get("http://127.0.0.1:3000/timings", {
+    .get("https://acbdata.herokuapp.com/timings", {
       params: {
         clsNbr: csNr,
       },
@@ -158,7 +158,7 @@ const removeFromTT = (csNr, collitp) => {
 
 const addToTT = (csNr, collitp) => {
   axios
-    .get("http://127.0.0.1:3000/timings", {
+    .get("https://acbdata.herokuapp.com/timings", {
       params: {
         clsNbr: csNr,
       },
@@ -261,7 +261,7 @@ const getTT = (id, collitp) => {
   preloaderTemplate.innerText = " ";
   collitParent.appendChild(preloaderTemplate);
   axios
-    .get("http://127.0.0.1:3000/student/tt", {
+    .get("https://acbdata.herokuapp.com/student/tt", {
       params: {
         studid: id,
       },
@@ -301,7 +301,7 @@ const getTT = (id, collitp) => {
 
       tableBodydivs = Array.from(document.querySelector("#tableBody").children);
       // load section List
-      axios.get("http://127.0.0.1:3000/sectionList").then((res) => {
+      axios.get("https://acbdata.herokuapp.com/sectionList").then((res) => {
         studentListDiv.style.display = "none";
         sectionAvldiv.style.display = "block";
         sectionAdddiv.style.display = "block";
@@ -375,7 +375,7 @@ const getTT = (id, collitp) => {
 
 // Load Students List
 axios
-  .get("http://127.0.0.1:3000/student")
+  .get("https://acbdata.herokuapp.com/student")
   .then((res) => {
     res.data.forEach((element) => {
       let collit = document.createElement("a");
