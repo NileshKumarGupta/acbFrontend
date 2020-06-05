@@ -3,8 +3,18 @@ const sectionAvldiv = document.querySelector("#sectionAvailable");
 const sectionAdddiv = document.querySelector("#sectionAdded");
 const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
+// intializing Materailize js class
+M.AutoInit();
 
-axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+// initialize all models
+prerequisiteModal = document.querySelector("#prerequisiteModal");
+prerequisiteModal = M.Modal.init(prerequisiteModal);
+examModel = document.querySelector("#examModel");
+examModel = M.Modal.init(examModel);
+validateModal = document.querySelector("#validateModal");
+validateModal = M.Modal.init(validateModal);
+
+// axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 let currentID = "";
 let tableBodydivs = [];
 let prereList = [];
@@ -70,6 +80,12 @@ validateButton.addEventListener("click", () => {
   if (validated) {
     if (saveButton.className.includes("disabled"))
       saveButton.classList.toggle("disabled");
+  } else {
+    document
+      .querySelector("#validateModal")
+      .querySelector(".modal-content")
+      .querySelector("p").innerText = "Please check errors";
+    validateModal.open();
   }
 });
 
