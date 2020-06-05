@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="../src/materialize.min.css"
+      media="screen,projection"
+    />
+    <link type="text/css" rel="stylesheet" href="../src/index.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <div class="nav-wrapper red-darken-3">
+        <a href="#" class="brand-logo">Logo</a>
+      </div>
+    </nav>
+
+    <div class="row">
+      <!-- Student List and Section List -->
+      <div class="collection col s3" id="studentList">
+        <blockquote>
+          <h4>Student List</h4>
+        </blockquote>
+        <div class="divider"></div>
+      </div>
+
+      <div class="col s3">
+        <div class="collection" id="sectionAdded">
+          <blockquote>
+            <h6>Sections Added</h6>
+          </blockquote>
+          <div class="divider"></div>
+        </div>
+
+        <div class="collection" id="sectionAvailable">
+          <blockquote>
+            <h6>Sections Available</h6>
+          </blockquote>
+          <div class="divider"></div>
+        </div>
+      </div>
+
+      <!-- timetable -->
+      <div id="timeTable" class="col s9">
+        <table class="striped highlight centered">
+          <thead>
+            <tr>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+              <th>Saturday</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+
+        <div class="divider"></div>
+
+        <!-- Action Buttons -->
+        <div class="row" style="margin-top: 3rem;">
+          <!-- Prerequisites Modal-->
+          <div class="col s3 dispblck" id="prerequisiteModal">
+            <a class="waves-effect waves-light btn modal-trigger" href="#modal1"
+              >Prerequisites</a
+            >
+            <div id="modal1" class="modal">
+              <div class="modal-content">
+                <h4>Modal Header</h4>
+                <p>A bunch of text</p>
+              </div>
+              <div class="modal-footer">
+                <a
+                  href="#!"
+                  class="modal-close waves-effect waves-green btn-flat"
+                  >Agree</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Exam Schedule Modal-->
+          <div class="col s3 dispblck" id="examModal">
+            <a class="waves-effect waves-light btn modal-trigger" href="#modal1"
+              >Exam Schedule</a
+            >
+            <div id="modal1" class="modal">
+              <div class="modal-content">
+                <h4>Modal Header</h4>
+                <p>A bunch of text</p>
+              </div>
+              <div class="modal-footer">
+                <a
+                  href="#!"
+                  class="modal-close waves-effect waves-green btn-flat"
+                  >Agree</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Validate Action Button -->
+          <div class="col s3 dispblck">
+            <a
+              class="waves-effect waves-light btn modal-trigger"
+              href="#modal1"
+              id="validateButton"
+              >Validate</a
+            >
+            <div id="modal1" class="modal">
+              <div class="modal-content">
+                <h4>Modal Header</h4>
+                <p>A bunch of text</p>
+              </div>
+              <div class="modal-footer">
+                <a
+                  href="#!"
+                  class="modal-close waves-effect waves-green btn-flat"
+                  >Agree</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Action Button -->
+          <div class="col s3 dispblck">
+            <a class="waves-effect waves-light btn disabled" id="saveButton"
+              ><i class="material-icons right">save</i>Save</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="../src/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="../src/index.js"></script>
+  </body>
+</html>

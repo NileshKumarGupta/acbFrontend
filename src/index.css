@@ -1,0 +1,24 @@
+.dispblck {
+  display: block;
+  margin: auto;
+  align-content: center;
+  text-align: center;
+}
+
+#sectionAdded {
+  height: 30vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  display: none;
+}
+
+#sectionAvailable {
+  height: 50vh;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  display: none;
+}
+
+#preloaderTemplate {
+  display: none;
+}
