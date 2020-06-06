@@ -3,6 +3,8 @@ const sectionAvldiv = document.querySelector("#sectionAvailable");
 const sectionAdddiv = document.querySelector("#sectionAdded");
 const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
+const preloaderTemplate = document.querySelector("#preloaderTemplate");
+
 // intializing Materailize js class
 M.AutoInit();
 
@@ -14,18 +16,15 @@ examModel = M.Modal.init(examModel);
 validateModal = document.querySelector("#validateModal");
 validateModal = M.Modal.init(validateModal);
 
-// axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+// initializing variables
 let currentID = "";
 let tableBodydivs = [];
-let prereList = [];
+let prereqList = [];
 let examSchedule = [];
 let sectionList = [];
 let sectionAvailable = [];
-// populate section Added clsNbr
 let sectionAddedclsNbr = [];
 let sectionAddedDetails = [];
-
-// console.log(tableBodydivs[0]);
 
 // Add saveButton event listener
 saveButton.addEventListener("click", () => {
@@ -273,9 +272,10 @@ const addToTT = (csNr, collitp) => {
 const getTT = (id, collitp) => {
   let collitParent = collitp.parentElement;
   collitParent.innerHTML = "";
-  let preloaderTemplate = document.createElement("div");
-  preloaderTemplate.innerText = " ";
-  collitParent.appendChild(preloaderTemplate);
+  studentListDiv.style.display = "none";
+  // sectionAvldiv.style.display = "block";
+  // sectionAdddiv.style.display = "block";
+  document.querySelector("#preSecLoader").style.display = "block";
   axios
     .get("https://acbdata.herokuapp.com/student/tt", {
       params: {
@@ -318,7 +318,7 @@ const getTT = (id, collitp) => {
       tableBodydivs = Array.from(document.querySelector("#tableBody").children);
       // load section List
       axios.get("https://acbdata.herokuapp.com/sectionList").then((res) => {
-        studentListDiv.style.display = "none";
+        document.querySelector("#preSecLoader").style.display = "none";
         sectionAvldiv.style.display = "block";
         sectionAdddiv.style.display = "block";
 
@@ -390,9 +390,11 @@ const getTT = (id, collitp) => {
 };
 
 // Load Students List
+
 axios
   .get("https://acbdata.herokuapp.com/student")
   .then((res) => {
+    studentListDiv.querySelector(".preloader-wrapper").style.display = "none";
     res.data.forEach((element) => {
       let collit = document.createElement("a");
       collit.href = "#";
