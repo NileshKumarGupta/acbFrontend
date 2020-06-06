@@ -3,8 +3,7 @@ const sectionAvldiv = document.querySelector("#sectionAvailable");
 const sectionAdddiv = document.querySelector("#sectionAdded");
 const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
-const preloaderTemplate = document.querySelector("#preloaderTemplate");
-
+const backButton = document.querySelector("#backButton");
 // intializing Materailize js class
 M.AutoInit();
 
@@ -23,7 +22,8 @@ let prereqList = [];
 let examSchedule = [];
 let sectionList = [];
 let sectionAvailable = [];
-let sectionAddedclsNbr = [];
+let sectionAddedclsNbr = new Set();
+let sectionAddedCourse = new Set();
 let sectionAddedDetails = [];
 
 // Add saveButton event listener
@@ -249,10 +249,12 @@ const addToTT = (csNr, collitp) => {
           " " +
           res.data.Section +
           ":" +
-          res.data["Class Nbr"]
+          res.data["Class Nbr"] +
+          ":" +
+          res.data["Course ID"]
       );
-      sectionAddedclsNbr.push(res.data["Class Nbr"]);
-
+      sectionAddedclsNbr.add(res.data["Class Nbr"]);
+      sectionAddedCourse.add(res.data["Course ID"]);
       addIcon.addEventListener("click", () =>
         removeFromTT(res.data["Class Nbr"], collit)
       );
@@ -260,6 +262,8 @@ const addToTT = (csNr, collitp) => {
       collit.appendChild(addIcon);
 
       sectionAdddiv.appendChild(collit);
+
+      console.log(sectionAddedDetails);
 
       // get prerequisites
       // get Exam Schedule
@@ -273,8 +277,6 @@ const getTT = (id, collitp) => {
   let collitParent = collitp.parentElement;
   collitParent.innerHTML = "";
   studentListDiv.style.display = "none";
-  // sectionAvldiv.style.display = "block";
-  // sectionAdddiv.style.display = "block";
   document.querySelector("#preSecLoader").style.display = "block";
   axios
     .get("https://acbdata.herokuapp.com/student/tt", {
@@ -305,31 +307,35 @@ const getTT = (id, collitp) => {
             sectionAddedDetails.push(clsDetails);
 
           // Add clsNbr to sectionAdded list
-          if (clsDetails.split(":")[1])
-            sectionAddedclsNbr.push(clsDetails.split(":")[1]);
-
+          if (clsDetails.split(":")[1]) {
+            sectionAddedclsNbr.add(clsDetails.split(":")[1]);
+            sectionAddedCourse.add(clsDetails.split(":")[2]);
+          }
           tr.appendChild(td);
         });
         tableBody.appendChild(tr);
       });
 
-      // console.log(sectionAddedDetails);
+      console.log(sectionAddedDetails);
+      console.log(sectionAddedclsNbr);
+      console.log(sectionAddedCourse);
 
       tableBodydivs = Array.from(document.querySelector("#tableBody").children);
       // load section List
       axios.get("https://acbdata.herokuapp.com/sectionList").then((res) => {
         document.querySelector("#preSecLoader").style.display = "none";
+        backButton.style.display = "inline-block";
         sectionAvldiv.style.display = "block";
         sectionAdddiv.style.display = "block";
 
         // remove duplicate data
 
-        if (!sectionAddedclsNbr.includes(res.data[0]["Class Nbr"]))
-          sectionAvailable.push(res.data[0]);
+        if (!sectionAddedclsNbr.has(res.data[0]["Class Nbr"]))
+          sectionAvailable.add(res.data[0]);
 
         for (let i = 1; i < res.data.length; i++) {
           if (res.data[i]["Class Nbr"] != res.data[i - 1]["Class Nbr"]) {
-            if (!sectionAddedclsNbr.includes(res.data[i]["Class Nbr"]))
+            if (!sectionAddedclsNbr.has(res.data[i]["Class Nbr"]))
               sectionAvailable.push(res.data[i]);
           }
         }
@@ -383,6 +389,17 @@ const getTT = (id, collitp) => {
           sectionAvldiv.appendChild(collit);
         });
       });
+
+      // populate Prerequisites
+      axios
+        .get("https://acbdata.herokuapp.com/student/tt", {
+          params: {
+            courseNums: Array.from(sectionAddedCourse),
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        });
     })
     .catch((err) => {
       console.log(err);

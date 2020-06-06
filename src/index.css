@@ -1,3 +1,7 @@
+body {
+  overflow-y: hidden;
+}
+
 .dispblck {
   display: block;
   margin: auto;
@@ -19,6 +23,8 @@
   display: none;
 }
 
-#preloaderTemplate {
+#backButton {
   display: none;
+  width: fit-content;
+  margin-top: 0.5rem;
 }
