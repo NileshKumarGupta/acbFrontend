@@ -10,8 +10,8 @@ M.AutoInit();
 // initialize all models
 prerequisiteModal = document.querySelector("#prerequisiteModal");
 prerequisiteModal = M.Modal.init(prerequisiteModal);
-examModel = document.querySelector("#examModel");
-examModel = M.Modal.init(examModel);
+examModal = document.querySelector("#examModal");
+examModal = M.Modal.init(examModal);
 validateModal = document.querySelector("#validateModal");
 validateModal = M.Modal.init(validateModal);
 
@@ -19,66 +19,135 @@ validateModal = M.Modal.init(validateModal);
 let currentID = "";
 let tableBodydivs = [];
 let prereqList = [];
-let examSchedule = [];
+let examSchedule = new Set();
 let sectionList = [];
 let sectionAvailable = [];
 let sectionAddedclsNbr = new Set();
 let sectionAddedCourse = new Set();
 let sectionAddedDetails = [];
 
-// prerequisites modal function
-document
-  .querySelector("#prereqbtn")
-  // .querySelector("a")
-  .addEventListener("click", () => {
-    // get all courses
-    prerequisiteModal.open();
-    crsIdty = "";
-    sectionAddedDetails.forEach(
-      (str) => (crsIdty += str.split(" ")[0] + " " + str.split(" ")[1] + ",")
-    );
+// backButton function
+backButton.addEventListener("click", () => {
+  if (confirm("Warning: All your progress will be lost"))
+    window.location = "https://acbsoftware.netlify.com";
+});
 
-    document
-      .querySelector("#prereqList")
-      .querySelector(".preloader-wrapper").style.display = "block";
-    document
-      .querySelector("#prereqList")
-      .querySelectorAll(".collection-item")
-      .forEach((it) => it.remove());
-    axios
-      .get("https://acbdata.herokuapp.com/prst", {
-        params: {
-          courseIdentity: crsIdty,
-        },
-      })
-      .then((res) => {
-        res.data.forEach((preq) => {
-          let prereqstr =
-            preq["pereq1 title "] +
-            " " +
-            preq["pereq2 title "] +
-            " " +
-            preq["pereq3 title "] +
-            " " +
-            preq["pereq4 title "];
-
-          if (!prereqstr.trim()) return;
-
+// Exam schedule Modal function
+document.querySelector("#exambtn").addEventListener("click", () => {
+  clnrstr = "";
+  sectionAddedDetails.forEach((str) => {
+    clnrstr += str.split(":")[1] + ",";
+  });
+  examModal.open();
+  document
+    .querySelector("#examClashList")
+    .querySelector(".preloader-wrapper").style.display = "block";
+  document
+    .querySelector("#examClashList")
+    .querySelectorAll(".collection-item")
+    .forEach((it) => it.remove());
+  axios
+    .get("https://acbdata.herokuapp.com/exams", {
+      params: {
+        clsnr: clnrstr,
+      },
+    })
+    .then((res) => {
+      document
+        .querySelector("#examClashList")
+        .querySelector(".preloader-wrapper").style.display = "none";
+      examSchedule = new Set();
+      res.data.forEach((info) => {
+        let examstr =
+          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+        examSchedule.add(examstr);
+      });
+      examClashes = [];
+      examSchedule = Array.from(examSchedule);
+      for (d1 of examSchedule) {
+        for (d2 of examSchedule) {
+          if (d1 == d2 || d1.split(":")[1] == "" || d2.split(":")[1] == "")
+            continue;
+          if (d1.split(":")[1] == d2.split(":")[1]) {
+            examClashes.push(
+              d1.split(":")[0] + " clashes with " + d2.split(":")[0]
+            );
+          }
+        }
+      }
+      if (examClashes.length) {
+        examClashes.forEach((item) => {
           let collit = document.createElement("a");
           collit.href = "#";
           collit.className = "collection-item";
-          collit.innerText = preq["Title"] + " - " + prereqstr;
+          collit.innerText = item;
 
-          document.querySelector("#prereqList").append(collit);
+          document.querySelector("#examClashList").append(collit);
         });
-        document
-          .querySelector("#prereqList")
-          .querySelector(".preloader-wrapper").style.display = "none";
-      })
-      .catch((err) => {
-        console.log(err);
+      } else {
+        let collit = document.createElement("a");
+        collit.href = "#";
+        collit.className = "collection-item";
+        collit.innerText = "No Clashes Detected";
+
+        document.querySelector("#examClashList").append(collit);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// prerequisites modal function
+document.querySelector("#prereqbtn").addEventListener("click", () => {
+  // get all courses
+  prerequisiteModal.open();
+  crsIdty = "";
+  sectionAddedDetails.forEach(
+    (str) => (crsIdty += str.split(" ")[0] + " " + str.split(" ")[1] + ",")
+  );
+
+  document
+    .querySelector("#prereqList")
+    .querySelector(".preloader-wrapper").style.display = "block";
+  document
+    .querySelector("#prereqList")
+    .querySelectorAll(".collection-item")
+    .forEach((it) => it.remove());
+  axios
+    .get("https://acbdata.herokuapp.com/prst", {
+      params: {
+        courseIdentity: crsIdty,
+      },
+    })
+    .then((res) => {
+      res.data.forEach((preq) => {
+        let prereqstr =
+          preq["pereq1 title "] +
+          " " +
+          preq["pereq2 title "] +
+          " " +
+          preq["pereq3 title "] +
+          " " +
+          preq["pereq4 title "];
+
+        if (!prereqstr.trim()) return;
+
+        let collit = document.createElement("a");
+        collit.href = "#";
+        collit.className = "collection-item";
+        collit.innerText = preq["Title"] + " - " + prereqstr;
+
+        document.querySelector("#prereqList").append(collit);
       });
-  });
+      document
+        .querySelector("#prereqList")
+        .querySelector(".preloader-wrapper").style.display = "none";
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 console.log("does this execute till this?");
 
@@ -122,26 +191,77 @@ saveButton.addEventListener("click", () => {
 
 // Add validate button event listener
 validateButton.addEventListener("click", () => {
-  let validated = true;
+  let timeValidate = true;
   tableBodydivs.forEach((trow) => {
     // console.log(trow);
     Array.from(trow.children).forEach((tdata) => {
       // console.log(tdata.innerText);
       if (tdata.innerText.split(" ").length > 3) {
-        validated = false;
+        timeValidate = false;
       }
     });
   });
-  if (validated) {
-    if (saveButton.className.includes("disabled"))
-      saveButton.classList.toggle("disabled");
-  } else {
-    document
-      .querySelector("#validateModal")
-      .querySelector(".modal-content")
-      .querySelector("p").innerText = "Please check errors";
-    validateModal.open();
-  }
+
+  clnrstr = "";
+  sectionAddedDetails.forEach((str) => {
+    clnrstr += str.split(":")[1] + ",";
+  });
+
+  axios
+    .get("https://acbdata.herokuapp.com/exams", {
+      params: {
+        clsnr: clnrstr,
+      },
+    })
+    .then((res) => {
+      examSchedule = new Set();
+      res.data.forEach((info) => {
+        let examstr =
+          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+        examSchedule.add(examstr);
+      });
+      examClashes = [];
+      examSchedule = Array.from(examSchedule);
+      for (d1 of examSchedule) {
+        for (d2 of examSchedule) {
+          if (d1 == d2 || d1.split(":")[1] == "" || d2.split(":")[1] == "")
+            continue;
+          if (d1.split(":")[1] == d2.split(":")[1]) {
+            examClashes.push(
+              d1.split(":")[0] + " clashes with " + d2.split(":")[0]
+            );
+          }
+        }
+      }
+      let examValidate = false;
+      if (examClashes.length == 0) examValidate = true;
+
+      let validated = examValidate && timeValidate;
+
+      if (validated) {
+        document
+          .querySelector("#validateModal")
+          .querySelector(".modal-content")
+          .querySelector("p").innerText = "No Clashes Detected";
+        validateModal.open();
+        if (saveButton.className.includes("disabled"))
+          saveButton.classList.toggle("disabled");
+      } else {
+        let errorText = "";
+        if (!examValidate)
+          errorText +=
+            "There are clashes in exam timings, please check exam clashes";
+        if (!timeValidate) errorText += " There are clashes in class timings";
+        document
+          .querySelector("#validateModal")
+          .querySelector(".modal-content")
+          .querySelector("p").innerText = errorText;
+        validateModal.open();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 const removeFromTT = (csNr, collitp) => {
@@ -161,38 +281,52 @@ const removeFromTT = (csNr, collitp) => {
       // console.log(res.data['Class Pattern'], res.data['Mtg Start'], res.data['End time']);
       // remove from timetable
 
-      let startTime = parseInt(res.data["Mtg Start"].split(":")[0], 10);
-      if (startTime < 8) startTime += 12;
-      let endTime = parseInt(res.data["End time"].split(":")[0], 10);
-      if (endTime < 8) endTime += 12;
-      if (res.data["End time"].split(":")[1] != "00") endTime++;
-      let clsPtrn = res.data["Class Pattern"];
+      console.log(res.data);
 
-      let days = [];
-      for (let i = 0; i < clsPtrn.length; i++) {
-        if (clsPtrn[i] == "M") days.push(0);
-        if (clsPtrn[i] == "W") days.push(2);
-        if (clsPtrn[i] == "F") days.push(4);
-        if (clsPtrn[i] == "S") days.push(5);
-        if (clsPtrn[i] == "T")
-          if (clsPtrn[i + 1] == "H") days.push(3);
-          else days.push(1);
-      }
-      days.forEach((dayIndex) => {
-        for (let i = startTime; i != endTime; i++) {
-          let tddivs = Array.from(tableBodydivs[i - 8].children);
-          let reqString =
-            res.data.Subject +
-            " " +
-            res.data.Catalog.trim() +
-            " " +
-            res.data.Section;
+      finalDetails = [];
+      finalDetails.push(res.data[0]);
 
-          let remString = tddivs[dayIndex].innerText.split(reqString);
-          tddivs[dayIndex].innerText = remString[0] || "-" + remString[1] || "";
-          if (tddivs[dayIndex].innerText.split(" ").length < 4)
-            tddivs[dayIndex].style.backgroundColor = "transparent";
+      if (res.data.length != 1) {
+        for (let i = 1; i < res.data.length; i++) {
+          if (
+            res.data[i]["Class Pattern"] + res.data[i]["Mtg Start"] !=
+            res.data[i - 1]["Class Pattern"] + res.data[i - 1]["Mtg Start"]
+          )
+            finalDetails.push(res.data[i]);
         }
+      }
+
+      finalDetails.forEach((data) => {
+        let startTime = parseInt(data["Mtg Start"].split(":")[0], 10);
+        if (startTime < 8) startTime += 12;
+        let endTime = parseInt(data["End time"].split(":")[0], 10);
+        if (endTime < 8) endTime += 12;
+        if (data["End time"].split(":")[1] != "00") endTime++;
+        let clsPtrn = data["Class Pattern"];
+
+        let days = [];
+        for (let i = 0; i < clsPtrn.length; i++) {
+          if (clsPtrn[i] == "M") days.push(0);
+          if (clsPtrn[i] == "W") days.push(2);
+          if (clsPtrn[i] == "F") days.push(4);
+          if (clsPtrn[i] == "S") days.push(5);
+          if (clsPtrn[i] == "T")
+            if (clsPtrn[i + 1] == "H") days.push(3);
+            else days.push(1);
+        }
+        days.forEach((dayIndex) => {
+          for (let i = startTime; i != endTime; i++) {
+            let tddivs = Array.from(tableBodydivs[i - 8].children);
+            let reqString =
+              data.Subject + " " + data.Catalog.trim() + " " + data.Section;
+
+            let remString = tddivs[dayIndex].innerText.split(reqString);
+            tddivs[dayIndex].innerText =
+              remString[0] || "-" + remString[1] || "";
+            if (tddivs[dayIndex].innerText.split(" ").length < 4)
+              tddivs[dayIndex].style.backgroundColor = "transparent";
+          }
+        });
       });
 
       // move to available section List
@@ -201,12 +335,12 @@ const removeFromTT = (csNr, collitp) => {
       collit.href = "#";
       collit.className = "collection-item";
       collit.innerText =
-        res.data.Subject +
-        res.data.Catalog +
+        res.data[0].Subject +
+        res.data[0].Catalog +
         " " +
-        res.data["Course Title"] +
+        res.data[0]["Course Title"] +
         " " +
-        res.data.Section;
+        res.data[0].Section;
 
       let addIcon = document.createElement("i");
       addIcon.className = "material-icons";
@@ -214,7 +348,7 @@ const removeFromTT = (csNr, collitp) => {
       addIcon.style.float = "right";
 
       addIcon.addEventListener("click", () =>
-        addToTT(res.data["Class Nbr"], collit)
+        addToTT(res.data[0]["Class Nbr"], collit)
       );
 
       collit.appendChild(addIcon);
@@ -242,42 +376,56 @@ const addToTT = (csNr, collitp) => {
         saveButton.classList.toggle("disabled");
       // console.log(res.data['Class Pattern'], res.data['Mtg Start'], res.data['End time']);
       // add to timetable
+      console.log(res.data);
 
-      let startTime = parseInt(res.data["Mtg Start"].split(":")[0], 10);
-      if (startTime < 8) startTime += 12;
-      let endTime = parseInt(res.data["End time"].split(":")[0], 10);
-      if (endTime < 8) endTime += 12;
-      if (res.data["End time"].split(":")[1] != "00") endTime++;
+      finalDetails = [];
+      finalDetails.push(res.data[0]);
 
-      let clsPtrn = res.data["Class Pattern"];
-
-      let days = [];
-      for (let i = 0; i < clsPtrn.length; i++) {
-        if (clsPtrn[i] == "M") days.push(0);
-        if (clsPtrn[i] == "W") days.push(2);
-        if (clsPtrn[i] == "F") days.push(4);
-        if (clsPtrn[i] == "S") days.push(5);
-        if (clsPtrn[i] == "T")
-          if (clsPtrn[i + 1] == "H") days.push(3);
-          else days.push(1);
-      }
-      days.forEach((dayIndex) => {
-        for (let i = startTime; i != endTime; i++) {
-          let tddivs = Array.from(tableBodydivs[i - 8].children);
-          if (tddivs[dayIndex].innerText == "-")
-            tddivs[dayIndex].innerText =
-              res.data.Subject + res.data.Catalog + " " + res.data.Section;
-          else {
-            tddivs[dayIndex].innerText +=
-              " " +
-              res.data.Subject +
-              res.data.Catalog +
-              " " +
-              res.data.Section;
-            tddivs[dayIndex].style.backgroundColor = "#EE6E73";
-          }
-          tddivs[dayIndex].innerText = tddivs[dayIndex].innerText.trim();
+      if (res.data.length != 1) {
+        for (let i = 1; i < res.data.length; i++) {
+          if (
+            res.data[i]["Class Pattern"] + res.data[i]["Mtg Start"] !=
+            res.data[i - 1]["Class Pattern"] + res.data[i - 1]["Mtg Start"]
+          )
+            finalDetails.push(res.data[i]);
         }
+      }
+
+      // console.log(finalDetails);
+
+      finalDetails.forEach((data) => {
+        let startTime = parseInt(data["Mtg Start"].split(":")[0], 10);
+        if (startTime < 8) startTime += 12;
+        let endTime = parseInt(data["End time"].split(":")[0], 10);
+        if (endTime < 8) endTime += 12;
+        if (data["End time"].split(":")[1] != "00") endTime++;
+
+        let clsPtrn = data["Class Pattern"];
+
+        let days = [];
+        for (let i = 0; i < clsPtrn.length; i++) {
+          if (clsPtrn[i] == "M") days.push(0);
+          if (clsPtrn[i] == "W") days.push(2);
+          if (clsPtrn[i] == "F") days.push(4);
+          if (clsPtrn[i] == "S") days.push(5);
+          if (clsPtrn[i] == "T")
+            if (clsPtrn[i + 1] == "H") days.push(3);
+            else days.push(1);
+        }
+        days.forEach((dayIndex) => {
+          for (let i = startTime; i != endTime; i++) {
+            let tddivs = Array.from(tableBodydivs[i - 8].children);
+            if (tddivs[dayIndex].innerText == "-")
+              tddivs[dayIndex].innerText =
+                data.Subject + data.Catalog + " " + data.Section;
+            else {
+              tddivs[dayIndex].innerText +=
+                " " + data.Subject + data.Catalog + " " + data.Section;
+              tddivs[dayIndex].style.backgroundColor = "#EE6E73";
+            }
+            tddivs[dayIndex].innerText = tddivs[dayIndex].innerText.trim();
+          }
+        });
       });
 
       // move to added section List
@@ -286,12 +434,12 @@ const addToTT = (csNr, collitp) => {
       collit.href = "#";
       collit.className = "collection-item";
       collit.innerText =
-        res.data.Subject +
-        res.data.Catalog +
+        res.data[0].Subject +
+        res.data[0].Catalog +
         " " +
-        res.data["Course Title"] +
+        res.data[0]["Course Title"] +
         " " +
-        res.data.Section;
+        res.data[0].Section;
 
       let addIcon = document.createElement("i");
       addIcon.className = "material-icons";
@@ -300,20 +448,20 @@ const addToTT = (csNr, collitp) => {
 
       // add to section Added List
       sectionAddedDetails.push(
-        res.data.Subject +
+        res.data[0].Subject +
           " " +
-          res.data.Catalog.trim() +
+          res.data[0].Catalog.trim() +
           " " +
-          res.data.Section +
+          res.data[0].Section +
           ":" +
-          res.data["Class Nbr"] +
+          res.data[0]["Class Nbr"] +
           ":" +
-          res.data["Course ID"]
+          res.data[0]["Course ID"]
       );
-      sectionAddedclsNbr.add(res.data["Class Nbr"]);
-      sectionAddedCourse.add(res.data["Course ID"]);
+      sectionAddedclsNbr.add(res.data[0]["Class Nbr"]);
+      sectionAddedCourse.add(res.data[0]["Course ID"]);
       addIcon.addEventListener("click", () =>
-        removeFromTT(res.data["Class Nbr"], collit)
+        removeFromTT(res.data[0]["Class Nbr"], collit)
       );
 
       collit.appendChild(addIcon);
@@ -321,9 +469,6 @@ const addToTT = (csNr, collitp) => {
       sectionAdddiv.appendChild(collit);
 
       console.log(sectionAddedDetails);
-
-      // get prerequisites
-      // get Exam Schedule
     })
     .catch((err) => {
       console.log(err);
@@ -381,6 +526,9 @@ const getTT = (id, collitp) => {
       // load section List
       axios.get("https://acbdata.herokuapp.com/sectionList").then((res) => {
         document.querySelector("#preSecLoader").style.display = "none";
+        document
+          .querySelector("#studinfo")
+          .querySelector("blockquote").innerText = id;
         backButton.style.display = "inline-block";
         sectionAvldiv.style.display = "block";
         sectionAdddiv.style.display = "block";
@@ -446,23 +594,6 @@ const getTT = (id, collitp) => {
           sectionAvldiv.appendChild(collit);
         });
       });
-
-      // // populate Prerequisites
-
-      // console.log(sectionAddedDetails);
-
-      // axios
-      //   .get("https://acbdata.herokuapp.com/prst", {
-      //     params: {
-      //       courseNums: Array.from(sectionAddedCourse),
-      //     },
-      //   })
-      //   .then((res) => {
-      //     console.log(res);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
     })
     .catch((err) => {
       console.log(err);

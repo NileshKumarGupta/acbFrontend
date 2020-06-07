@@ -10,7 +10,7 @@ body {
 }
 
 #sectionAdded {
-  height: 30vh;
+  height: 25vh;
   overflow-y: scroll;
   scrollbar-width: none;
   display: none;

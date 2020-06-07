@@ -69,9 +69,13 @@
           </div>
         </div>
 
-        <a class="waves-effect waves-light btn" id="backButton">
-          <i class="material-icons center">arrow_back</i>
-        </a>
+        <div id="studinfo">
+          <a class="waves-effect waves-light btn" id="backButton">
+            <i class="material-icons center">arrow_back</i>
+          </a>
+
+          <blockquote></blockquote>
+        </div>
 
         <div class="collection" id="sectionAdded">
           <blockquote>
@@ -151,13 +155,34 @@
 
           <!-- Exam Schedule Modal-->
           <div class="col s3 dispblck">
-            <a class="waves-effect waves-light btn modal-trigger" href="#modal1"
-              >Exam Schedule</a
+            <a
+              class="waves-effect waves-light btn modal-trigger"
+              href="#modal1"
+              id="exambtn"
+              >Exam Clashes</a
             >
             <div id="examModal" class="modal">
               <div class="modal-content">
-                <h4>Modal Header</h4>
-                <p></p>
+                <h4>Exam Clashes</h4>
+                <div class="collection" id="examClashList">
+                  <div class="divider"></div>
+                  <div
+                    class="preloader-wrapper big active"
+                    style="display: block; margin: 2rem auto;"
+                  >
+                    <div class="spinner-layer spinner-red-only">
+                      <div class="circle-clipper left">
+                        <div class="circle"></div>
+                      </div>
+                      <div class="gap-patch">
+                        <div class="circle"></div>
+                      </div>
+                      <div class="circle-clipper right">
+                        <div class="circle"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="modal-footer">
                 <a
@@ -179,7 +204,7 @@
             >
             <div id="validateModal" class="modal">
               <div class="modal-content">
-                <h4>There is a conflict</h4>
+                <h4>Conflicts</h4>
                 <p></p>
               </div>
               <div class="modal-footer">
