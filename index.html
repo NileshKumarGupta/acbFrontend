@@ -32,7 +32,10 @@
         </blockquote>
         <div class="divider"></div>
         <!-- preloader template -->
-        <div class="preloader-wrapper big active" style="display: block; margin: 2rem auto;">
+        <div
+          class="preloader-wrapper big active"
+          style="display: block; margin: 2rem auto;"
+        >
           <div class="spinner-layer spinner-red-only">
             <div class="circle-clipper left">
               <div class="circle"></div>
@@ -48,7 +51,11 @@
       </div>
 
       <div class="col s3">
-        <div class="preloader-wrapper big active" style="display: none; margin: 2rem auto;" id='preSecLoader'>
+        <div
+          class="preloader-wrapper big active"
+          style="display: none; margin: 2rem auto;"
+          id="preSecLoader"
+        >
           <div class="spinner-layer spinner-red-only">
             <div class="circle-clipper left">
               <div class="circle"></div>
@@ -79,7 +86,6 @@
           </blockquote>
           <div class="divider"></div>
         </div>
-
       </div>
 
       <!-- timetable -->
@@ -104,17 +110,34 @@
         <div class="row" style="margin-top: 3rem;">
           <!-- Prerequisites Modal-->
           <div class="col s3 dispblck">
-            <a class="waves-effect waves-light btn modal-trigger" href="#modal1"
+            <a
+              class="waves-effect waves-light btn modal-trigger"
+              href="#modal1"
+              id="prereqbtn"
               >Prerequisites</a
             >
             <div id="prerequisiteModal" class="modal">
               <div class="modal-content">
                 <h4>Prerequisites</h4>
-                <p>
-                    <div class="collection" id="prereqList">
-                      <div class="divider"></div>
+                <div class="collection" id="prereqList">
+                  <div class="divider"></div>
+                  <div
+                    class="preloader-wrapper big active"
+                    style="display: block; margin: 2rem auto;"
+                  >
+                    <div class="spinner-layer spinner-red-only">
+                      <div class="circle-clipper left">
+                        <div class="circle"></div>
+                      </div>
+                      <div class="gap-patch">
+                        <div class="circle"></div>
+                      </div>
+                      <div class="circle-clipper right">
+                        <div class="circle"></div>
+                      </div>
                     </div>
-                </p>
+                  </div>
+                </div>
               </div>
               <div class="modal-footer">
                 <a
@@ -178,7 +201,6 @@
         </div>
       </div>
     </div>
-
 
     <script type="text/javascript" src="src/materialize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>

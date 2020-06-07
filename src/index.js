@@ -26,6 +26,62 @@ let sectionAddedclsNbr = new Set();
 let sectionAddedCourse = new Set();
 let sectionAddedDetails = [];
 
+// prerequisites modal function
+document
+  .querySelector("#prereqbtn")
+  // .querySelector("a")
+  .addEventListener("click", () => {
+    // get all courses
+    prerequisiteModal.open();
+    crsIdty = "";
+    sectionAddedDetails.forEach(
+      (str) => (crsIdty += str.split(" ")[0] + " " + str.split(" ")[1] + ",")
+    );
+
+    document
+      .querySelector("#prereqList")
+      .querySelector(".preloader-wrapper").style.display = "block";
+    document
+      .querySelector("#prereqList")
+      .querySelectorAll(".collection-item")
+      .forEach((it) => it.remove());
+    axios
+      .get("https://acbdata.herokuapp.com/prst", {
+        params: {
+          courseIdentity: crsIdty,
+        },
+      })
+      .then((res) => {
+        res.data.forEach((preq) => {
+          let prereqstr =
+            preq["pereq1 title "] +
+            " " +
+            preq["pereq2 title "] +
+            " " +
+            preq["pereq3 title "] +
+            " " +
+            preq["pereq4 title "];
+
+          if (!prereqstr.trim()) return;
+
+          let collit = document.createElement("a");
+          collit.href = "#";
+          collit.className = "collection-item";
+          collit.innerText = preq["Title"] + " - " + prereqstr;
+
+          document.querySelector("#prereqList").append(collit);
+        });
+        document
+          .querySelector("#prereqList")
+          .querySelector(".preloader-wrapper").style.display = "none";
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+
+console.log("does this execute till this?");
+
 // Add saveButton event listener
 saveButton.addEventListener("click", () => {
   let toSendData = [];
@@ -391,19 +447,22 @@ const getTT = (id, collitp) => {
         });
       });
 
-      // populate Prerequisites
+      // // populate Prerequisites
 
-      console.log(sectionAddedDetails);
+      // console.log(sectionAddedDetails);
 
-      axios
-        .get("https://acbdata.herokuapp.com/prst", {
-          params: {
-            courseNums: Array.from(sectionAddedCourse),
-          },
-        })
-        .then((res) => {
-          console.log(res);
-        });
+      // axios
+      //   .get("https://acbdata.herokuapp.com/prst", {
+      //     params: {
+      //       courseNums: Array.from(sectionAddedCourse),
+      //     },
+      //   })
+      //   .then((res) => {
+      //     console.log(res);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     })
     .catch((err) => {
       console.log(err);
@@ -411,7 +470,7 @@ const getTT = (id, collitp) => {
 };
 
 // Load Students List
-
+console.log("is this executing?");
 axios
   .get("https://acbdata.herokuapp.com/student")
   .then((res) => {
