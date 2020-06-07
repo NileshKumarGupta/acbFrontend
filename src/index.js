@@ -101,6 +101,7 @@ const removeFromTT = (csNr, collitp) => {
       },
     })
     .then((res) => {
+      console.log("this executed");
       // console.log(res.data['Class Pattern'], res.data['Mtg Start'], res.data['End time']);
       // remove from timetable
 
@@ -331,7 +332,7 @@ const getTT = (id, collitp) => {
         // remove duplicate data
 
         if (!sectionAddedclsNbr.has(res.data[0]["Class Nbr"]))
-          sectionAvailable.add(res.data[0]);
+          sectionAvailable.push(res.data[0]);
 
         for (let i = 1; i < res.data.length; i++) {
           if (res.data[i]["Class Nbr"] != res.data[i - 1]["Class Nbr"]) {
@@ -391,8 +392,11 @@ const getTT = (id, collitp) => {
       });
 
       // populate Prerequisites
+
+      console.log(sectionAddedDetails);
+
       axios
-        .get("https://acbdata.herokuapp.com/student/tt", {
+        .get("https://acbdata.herokuapp.com/prst", {
           params: {
             courseNums: Array.from(sectionAddedCourse),
           },
