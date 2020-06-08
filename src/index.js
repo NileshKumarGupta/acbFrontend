@@ -64,17 +64,24 @@ document.querySelector("#exambtn").addEventListener("click", () => {
       });
       examClashes = [];
       examSchedule = Array.from(examSchedule);
-      for (d1 of examSchedule) {
-        for (d2 of examSchedule) {
-          if (d1 == d2 || d1.split(":")[1] == "" || d2.split(":")[1] == "")
+      for (let i = 0; i < examSchedule.length; i++) {
+        for (let j = i + 1; j < examSchedule.length; j++) {
+          if (
+            examSchedule[i] == examSchedule[j] ||
+            examSchedule[i].split(":")[1] == "" ||
+            examSchedule[j].split(":")[1] == ""
+          )
             continue;
-          if (d1.split(":")[1] == d2.split(":")[1]) {
+          if (examSchedule[i].split(":")[1] == examSchedule[j].split(":")[1]) {
             examClashes.push(
-              d1.split(":")[0] + " clashes with " + d2.split(":")[0]
+              examSchedule[i].split(":")[0] +
+                " clashes with " +
+                examSchedule[j].split(":")[0]
             );
           }
         }
       }
+
       if (examClashes.length) {
         examClashes.forEach((item) => {
           let collit = document.createElement("a");
@@ -94,7 +101,7 @@ document.querySelector("#exambtn").addEventListener("click", () => {
       }
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 });
 
@@ -145,18 +152,18 @@ document.querySelector("#prereqbtn").addEventListener("click", () => {
         .querySelector(".preloader-wrapper").style.display = "none";
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 });
 
-console.log("does this execute till this?");
+// console.log("does this execute till this?");
 
 // Add saveButton event listener
 saveButton.addEventListener("click", () => {
   let toSendData = [];
   tableBodydivs.forEach((tr) => {
     let trData = "";
-    console.log(tr);
+    // console.log(tr);
     Array.from(tr.children).forEach((td) => {
       let found = false;
       for (let i = 0; i < sectionAddedDetails.length; i++) {
@@ -170,10 +177,10 @@ saveButton.addEventListener("click", () => {
       if (!found) trData += "-,";
     });
     trData = trData.slice(0, -2);
-    console.log(trData);
+    // console.log(trData);
     toSendData.push(trData);
   });
-  // console.log(toSendData);
+  console.log(toSendData);
   axios
     .put("https://acbdata.herokuapp.com/student/" + currentID, {
       id: currentID,
@@ -185,7 +192,7 @@ saveButton.addEventListener("click", () => {
       saveButton.click();
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 });
 
@@ -222,13 +229,19 @@ validateButton.addEventListener("click", () => {
       });
       examClashes = [];
       examSchedule = Array.from(examSchedule);
-      for (d1 of examSchedule) {
-        for (d2 of examSchedule) {
-          if (d1 == d2 || d1.split(":")[1] == "" || d2.split(":")[1] == "")
+      for (let i = 0; i < examSchedule.length; i++) {
+        for (let j = i + 1; j < examSchedule.length; j++) {
+          if (
+            examSchedule[i] == examSchedule[j] ||
+            examSchedule[i].split(":")[1] == "" ||
+            examSchedule[j].split(":")[1] == ""
+          )
             continue;
-          if (d1.split(":")[1] == d2.split(":")[1]) {
+          if (examSchedule[i].split(":")[1] == examSchedule[j].split(":")[1]) {
             examClashes.push(
-              d1.split(":")[0] + " clashes with " + d2.split(":")[0]
+              examSchedule[i].split(":")[0] +
+                " clashes with " +
+                examSchedule[j].split(":")[0]
             );
           }
         }
@@ -242,7 +255,7 @@ validateButton.addEventListener("click", () => {
         document
           .querySelector("#validateModal")
           .querySelector(".modal-content")
-          .querySelector("p").innerText = "No Clashes Detected";
+          .querySelector("p").innerHTML = "<h5>No Clashes Detected</h5>";
         validateModal.open();
         if (saveButton.className.includes("disabled"))
           saveButton.classList.toggle("disabled");
@@ -255,12 +268,12 @@ validateButton.addEventListener("click", () => {
         document
           .querySelector("#validateModal")
           .querySelector(".modal-content")
-          .querySelector("p").innerText = errorText;
+          .querySelector("p").innerHTML = "<h5>" + errorText + "</h5>";
         validateModal.open();
       }
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 });
 
@@ -277,11 +290,15 @@ const removeFromTT = (csNr, collitp) => {
       },
     })
     .then((res) => {
-      console.log("this executed");
-      // console.log(res.data['Class Pattern'], res.data['Mtg Start'], res.data['End time']);
+      // console.log("this executed");
+      // console.log(
+      //   res.data["Class Pattern"],
+      //   res.data["Mtg Start"],
+      //   res.data["End time"]
+      // );
       // remove from timetable
 
-      console.log(res.data);
+      // console.log(res.data);
 
       finalDetails = [];
       finalDetails.push(res.data[0]);
@@ -321,13 +338,30 @@ const removeFromTT = (csNr, collitp) => {
               data.Subject + " " + data.Catalog.trim() + " " + data.Section;
 
             let remString = tddivs[dayIndex].innerText.split(reqString);
-            tddivs[dayIndex].innerText =
-              remString[0] || "-" + remString[1] || "";
-            if (tddivs[dayIndex].innerText.split(" ").length < 4)
+            // console.log(remString);
+            if (remString[0] == "" && remString[1] == "") {
+              // console.log(remString[0], remString[1]);
+              tddivs[dayIndex].innerText = "-";
+            } else if (remString[0] == "") {
+              tddivs[dayIndex].innerText = remString[1];
+            } else {
+              tddivs[dayIndex].innerText = remString[0];
+            }
+            // console.log(tddivs[dayIndex].innerText);
+            if (tddivs[dayIndex].innerText.trim().split(" ").length < 4)
               tddivs[dayIndex].style.backgroundColor = "transparent";
           }
         });
       });
+
+      // remove from sectionAddedDetails
+
+      let reqclsnum = res.data[0]["Class Nbr"];
+      sectionAddedDetails = sectionAddedDetails.filter((val) => {
+        if (val.split(":")[1] != reqclsnum) return val;
+      });
+
+      // console.log(sectionAddedDetails);
 
       // move to available section List
 
@@ -358,7 +392,7 @@ const removeFromTT = (csNr, collitp) => {
       );
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 };
 
@@ -374,9 +408,13 @@ const addToTT = (csNr, collitp) => {
       collitp.remove();
       if (!saveButton.className.includes("disabled"))
         saveButton.classList.toggle("disabled");
-      // console.log(res.data['Class Pattern'], res.data['Mtg Start'], res.data['End time']);
+      // // console.log(
+      //   res.data["Class Pattern"],
+      //   res.data["Mtg Start"],
+      //   res.data["End time"]
+      // );
       // add to timetable
-      console.log(res.data);
+      // console.log(res.data);
 
       finalDetails = [];
       finalDetails.push(res.data[0]);
@@ -468,10 +506,10 @@ const addToTT = (csNr, collitp) => {
 
       sectionAdddiv.appendChild(collit);
 
-      console.log(sectionAddedDetails);
+      // console.log(sectionAddedDetails);
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 };
 
@@ -518,9 +556,9 @@ const getTT = (id, collitp) => {
         tableBody.appendChild(tr);
       });
 
-      console.log(sectionAddedDetails);
-      console.log(sectionAddedclsNbr);
-      console.log(sectionAddedCourse);
+      // console.log(sectionAddedDetails);
+      // console.log(sectionAddedclsNbr);
+      // console.log(sectionAddedCourse);
 
       tableBodydivs = Array.from(document.querySelector("#tableBody").children);
       // load section List
@@ -596,12 +634,12 @@ const getTT = (id, collitp) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 };
 
 // Load Students List
-console.log("is this executing?");
+// console.log("is this executing?");
 axios
   .get("https://acbdata.herokuapp.com/student")
   .then((res) => {
