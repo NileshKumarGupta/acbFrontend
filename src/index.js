@@ -471,12 +471,7 @@ const addToTT = (csNr, collitp) => {
       collit.href = "#";
       collit.className = "collection-item";
       collit.innerText =
-        res.data[0].Subject +
-        res.data[0].Catalog +
-        " " +
-        res.data[0]["Course Title"] +
-        " " +
-        res.data[0].Section;
+        res.data[0].Subject + res.data[0].Catalog + " " + res.data[0].Section;
 
       let addIcon = document.createElement("i");
       addIcon.className = "material-icons";
