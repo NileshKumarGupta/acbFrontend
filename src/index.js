@@ -281,7 +281,6 @@ const removeFromTT = (csNr, collitp) => {
   // remove data from timetable
   // remove from section Added List
   // Add to sectionAvailable list
-
   collitp.remove();
   axios
     .get("https://acbdata.herokuapp.com/timings", {
@@ -397,6 +396,7 @@ const removeFromTT = (csNr, collitp) => {
 };
 
 const addToTT = (csNr, collitp) => {
+  collitp.remove();
   axios
     .get("https://acbdata.herokuapp.com/timings", {
       params: {
@@ -405,7 +405,6 @@ const addToTT = (csNr, collitp) => {
     })
     .then((res) => {
       // console.log(res.data);
-      collitp.remove();
       if (!saveButton.className.includes("disabled"))
         saveButton.classList.toggle("disabled");
       // // console.log(
