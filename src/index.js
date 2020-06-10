@@ -180,7 +180,7 @@ saveButton.addEventListener("click", () => {
     // console.log(trData);
     toSendData.push(trData);
   });
-  console.log(toSendData);
+  M.toast({ html: "Saving" });
   axios
     .put("https://acbdata.herokuapp.com/student/" + currentID, {
       id: currentID,
