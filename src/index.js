@@ -187,9 +187,10 @@ saveButton.addEventListener("click", () => {
       tt: toSendData,
     })
     .then(() => {
-      alert("Save Successful");
+      M.toast({ html: "Saved Successfully" });
       saveButton.href = "index.html";
-      saveButton.click();
+      setTimeout(() => saveButton.click(), 1500);
+      // saveButton.click();
     })
     .catch((err) => {
       // console.log(err);
