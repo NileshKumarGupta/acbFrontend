@@ -1,5 +1,5 @@
 body {
-  overflow-y: hidden;
+  overflow-y: scroll;
 }
 
 .dispblck {
@@ -19,6 +19,7 @@ body {
 #sectionAvailable {
   height: 50vh;
   overflow-y: scroll;
+  overflow-x: hidden;
   scrollbar-width: none;
   display: none;
 }
@@ -27,4 +28,8 @@ body {
   display: none;
   width: fit-content;
   margin-top: 0.5rem;
+}
+
+#filter {
+  margin: 1rem;
 }

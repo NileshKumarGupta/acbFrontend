@@ -4,6 +4,7 @@ const sectionAdddiv = document.querySelector("#sectionAdded");
 const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
 const backButton = document.querySelector("#backButton");
+const filter = document.querySelector("#filter");
 // intializing Materailize js class
 M.AutoInit();
 
@@ -25,6 +26,16 @@ let sectionAvailable = [];
 let sectionAddedclsNbr = new Set();
 let sectionAddedCourse = new Set();
 let sectionAddedDetails = [];
+
+// search function
+filter.addEventListener("keyup", () => {
+  let text = filter.value.toUpperCase();
+  Array.from(sectionAvldiv.children).forEach((li) => {
+    if (li.tagName == "INPUT" || li.tagName == "DIV") return;
+    if (!li.innerText.includes(text)) li.style.display = "none";
+    else li.style.display = "block";
+  });
+});
 
 // backButton function
 backButton.addEventListener("click", () => {
@@ -551,14 +562,13 @@ const getTT = (id, collitp) => {
         tableBody.appendChild(tr);
       });
 
-      // console.log(sectionAddedDetails);
-      // console.log(sectionAddedclsNbr);
-      // console.log(sectionAddedCourse);
-
       tableBodydivs = Array.from(document.querySelector("#tableBody").children);
       // load section List
       axios.get("https://acbdata.herokuapp.com/sectionList").then((res) => {
         document.querySelector("#preSecLoader").style.display = "none";
+        document.querySelector("#sectionAddedHeading").style.display = "block";
+        document.querySelector("#sectionAvailableHeading").style.display =
+          "block";
         document
           .querySelector("#studinfo")
           .querySelector("blockquote").innerText = id;
@@ -629,12 +639,10 @@ const getTT = (id, collitp) => {
       });
     })
     .catch((err) => {
-      // console.log(err);
+      console.log(err);
     });
 };
 
-// Load Students List
-// console.log("is this executing?");
 axios
   .get("https://acbdata.herokuapp.com/student")
   .then((res) => {
