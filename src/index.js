@@ -39,7 +39,7 @@ filter.addEventListener("keyup", () => {
 
 // backButton function
 backButton.addEventListener("click", () => {
-  if (confirm("Warning: All your progress will be lost"))
+  if (confirm("Warning: All unsaved data will be lost"))
     window.location = "https://acbsoftware.netlify.com";
 });
 
@@ -112,7 +112,7 @@ document.querySelector("#exambtn").addEventListener("click", () => {
       }
     })
     .catch((err) => {
-      // console.log(err);
+      console.log(err);
     });
 });
 
@@ -167,14 +167,11 @@ document.querySelector("#prereqbtn").addEventListener("click", () => {
     });
 });
 
-// console.log("does this execute till this?");
-
 // Add saveButton event listener
 saveButton.addEventListener("click", () => {
   let toSendData = [];
   tableBodydivs.forEach((tr) => {
     let trData = "";
-    // console.log(tr);
     Array.from(tr.children).forEach((td) => {
       let found = false;
       for (let i = 0; i < sectionAddedDetails.length; i++) {
@@ -188,7 +185,6 @@ saveButton.addEventListener("click", () => {
       if (!found) trData += "-,";
     });
     trData = trData.slice(0, -2);
-    // console.log(trData);
     toSendData.push(trData);
   });
   M.toast({ html: "Saving" });
@@ -201,10 +197,9 @@ saveButton.addEventListener("click", () => {
       M.toast({ html: "Saved Successfully" });
       saveButton.href = "index.html";
       setTimeout(() => saveButton.click(), 1500);
-      // saveButton.click();
     })
     .catch((err) => {
-      // console.log(err);
+      console.log(err);
     });
 });
 
@@ -212,9 +207,7 @@ saveButton.addEventListener("click", () => {
 validateButton.addEventListener("click", () => {
   let timeValidate = true;
   tableBodydivs.forEach((trow) => {
-    // console.log(trow);
     Array.from(trow.children).forEach((tdata) => {
-      // console.log(tdata.innerText);
       if (tdata.innerText.split(" ").length > 3) {
         timeValidate = false;
       }
@@ -301,16 +294,6 @@ const removeFromTT = (csNr, collitp) => {
       },
     })
     .then((res) => {
-      // console.log("this executed");
-      // console.log(
-      //   res.data["Class Pattern"],
-      //   res.data["Mtg Start"],
-      //   res.data["End time"]
-      // );
-      // remove from timetable
-
-      // console.log(res.data);
-
       finalDetails = [];
       finalDetails.push(res.data[0]);
 
@@ -334,13 +317,13 @@ const removeFromTT = (csNr, collitp) => {
 
         let days = [];
         for (let i = 0; i < clsPtrn.length; i++) {
-          if (clsPtrn[i] == "M") days.push(0);
-          if (clsPtrn[i] == "W") days.push(2);
-          if (clsPtrn[i] == "F") days.push(4);
-          if (clsPtrn[i] == "S") days.push(5);
+          if (clsPtrn[i] == "M") days.push(1);
+          if (clsPtrn[i] == "W") days.push(3);
+          if (clsPtrn[i] == "F") days.push(5);
+          if (clsPtrn[i] == "S") days.push(6);
           if (clsPtrn[i] == "T")
-            if (clsPtrn[i + 1] == "H") days.push(3);
-            else days.push(1);
+            if (clsPtrn[i + 1] == "H") days.push(4);
+            else days.push(2);
         }
         days.forEach((dayIndex) => {
           for (let i = startTime; i != endTime; i++) {
@@ -349,16 +332,13 @@ const removeFromTT = (csNr, collitp) => {
               data.Subject + " " + data.Catalog.trim() + " " + data.Section;
 
             let remString = tddivs[dayIndex].innerText.split(reqString);
-            // console.log(remString);
             if (remString[0] == "" && remString[1] == "") {
-              // console.log(remString[0], remString[1]);
               tddivs[dayIndex].innerText = "-";
             } else if (remString[0] == "") {
               tddivs[dayIndex].innerText = remString[1];
             } else {
               tddivs[dayIndex].innerText = remString[0];
             }
-            // console.log(tddivs[dayIndex].innerText);
             if (tddivs[dayIndex].innerText.trim().split(" ").length < 4)
               tddivs[dayIndex].style.backgroundColor = "transparent";
           }
@@ -371,8 +351,6 @@ const removeFromTT = (csNr, collitp) => {
       sectionAddedDetails = sectionAddedDetails.filter((val) => {
         if (val.split(":")[1] != reqclsnum) return val;
       });
-
-      // console.log(sectionAddedDetails);
 
       // move to available section List
 
@@ -403,7 +381,7 @@ const removeFromTT = (csNr, collitp) => {
       );
     })
     .catch((err) => {
-      // console.log(err);
+      console.log(err);
     });
 };
 
@@ -416,16 +394,8 @@ const addToTT = (csNr, collitp) => {
       },
     })
     .then((res) => {
-      // console.log(res.data);
       if (!saveButton.className.includes("disabled"))
         saveButton.classList.toggle("disabled");
-      // // console.log(
-      //   res.data["Class Pattern"],
-      //   res.data["Mtg Start"],
-      //   res.data["End time"]
-      // );
-      // add to timetable
-      // console.log(res.data);
 
       finalDetails = [];
       finalDetails.push(res.data[0]);
@@ -440,8 +410,6 @@ const addToTT = (csNr, collitp) => {
         }
       }
 
-      // console.log(finalDetails);
-
       finalDetails.forEach((data) => {
         let startTime = parseInt(data["Mtg Start"].split(":")[0], 10);
         if (startTime < 8) startTime += 12;
@@ -453,13 +421,13 @@ const addToTT = (csNr, collitp) => {
 
         let days = [];
         for (let i = 0; i < clsPtrn.length; i++) {
-          if (clsPtrn[i] == "M") days.push(0);
-          if (clsPtrn[i] == "W") days.push(2);
-          if (clsPtrn[i] == "F") days.push(4);
-          if (clsPtrn[i] == "S") days.push(5);
+          if (clsPtrn[i] == "M") days.push(1);
+          if (clsPtrn[i] == "W") days.push(3);
+          if (clsPtrn[i] == "F") days.push(5);
+          if (clsPtrn[i] == "S") days.push(6);
           if (clsPtrn[i] == "T")
-            if (clsPtrn[i + 1] == "H") days.push(3);
-            else days.push(1);
+            if (clsPtrn[i + 1] == "H") days.push(4);
+            else days.push(2);
         }
         days.forEach((dayIndex) => {
           for (let i = startTime; i != endTime; i++) {
@@ -511,11 +479,9 @@ const addToTT = (csNr, collitp) => {
       collit.appendChild(addIcon);
 
       sectionAdddiv.appendChild(collit);
-
-      // console.log(sectionAddedDetails);
     })
     .catch((err) => {
-      // console.log(err);
+      console.log(err);
     });
 };
 
@@ -533,6 +499,7 @@ const getTT = (id, collitp) => {
     .then((res) => {
       currentID = id;
       // make rows according to the table body
+      let dayBeginTime = 8;
       res.data.tt.forEach((hrRow) => {
         let tr = document.createElement("tr");
 
@@ -540,11 +507,14 @@ const getTT = (id, collitp) => {
         // rows of data according to each hour - delimiter ','
         // classnumber delimiter ':'
 
+        // add time
+        let td = document.createElement("td");
+        td.innerText = dayBeginTime++ + ":00";
+        tr.appendChild(td);
+
         hrRow.split(",").forEach((clsDetails) => {
           let td = document.createElement("td");
           td.innerText = clsDetails.split(":")[0];
-
-          // console.log(clsDetails);
 
           if (
             clsDetails.includes(":") &&
