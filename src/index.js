@@ -5,6 +5,7 @@ const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
 const backButton = document.querySelector("#backButton");
 const filter = document.querySelector("#filter");
+
 // intializing Materailize js class
 M.AutoInit();
 
@@ -187,6 +188,7 @@ saveButton.addEventListener("click", () => {
     trData = trData.slice(0, -2);
     toSendData.push(trData);
   });
+  console.log(toSendData.toString());
   M.toast({ html: "Saving" });
   axios
     .put("https://acbdata.herokuapp.com/student/" + currentID, {
@@ -196,7 +198,7 @@ saveButton.addEventListener("click", () => {
     .then(() => {
       M.toast({ html: "Saved Successfully" });
       saveButton.href = "index.html";
-      setTimeout(() => saveButton.click(), 1500);
+      // setTimeout(() => saveButton.click(), 1500);
     })
     .catch((err) => {
       console.log(err);
