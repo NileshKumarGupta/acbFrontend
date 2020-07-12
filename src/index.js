@@ -174,6 +174,7 @@ saveButton.addEventListener("click", () => {
   tableBodydivs.forEach((tr) => {
     let trData = "";
     Array.from(tr.children).forEach((td) => {
+      if (td.innerText.includes("00")) return;
       let found = false;
       for (let i = 0; i < sectionAddedDetails.length; i++) {
         if (
@@ -186,9 +187,10 @@ saveButton.addEventListener("click", () => {
       if (!found) trData += "-,";
     });
     trData = trData.slice(0, -2);
+    console.log(trData);
     toSendData.push(trData);
   });
-  console.log(toSendData.toString());
+  // console.log(toSendData.toString());
   M.toast({ html: "Saving" });
   axios
     .put("https://acbdata.herokuapp.com/student/" + currentID, {
@@ -198,7 +200,7 @@ saveButton.addEventListener("click", () => {
     .then(() => {
       M.toast({ html: "Saved Successfully" });
       saveButton.href = "index.html";
-      // setTimeout(() => saveButton.click(), 1500);
+      window.location = "https://acbsoftware.netlify.app";
     })
     .catch((err) => {
       console.log(err);
@@ -547,6 +549,33 @@ const getTT = (id, collitp) => {
         backButton.style.display = "inline-block";
         sectionAvldiv.style.display = "block";
         sectionAdddiv.style.display = "block";
+
+        let downloadFileButton = document.querySelector("#downloadButton");
+        downloadFileButton.style.display = "inline-block";
+        downloadFileButton.addEventListener("click", () => {
+          let thead = Array.from(
+            document.querySelector("thead").children[0].children
+          );
+          let header = thead.reduce(
+            (text, el) => text + el.innerText + ",",
+            ""
+          );
+          let data = [];
+          data.push(header);
+          for (let i = 0; i < tableBodydivs.length; i++) {
+            data.push(
+              Array.from(tableBodydivs[i].children).reduce(
+                (text, el) => (text += el.innerText + ","),
+                ""
+              )
+            );
+          }
+
+          let csvString = data.join("%0A");
+          downloadFileButton.href = "data:attachment/csv," + csvString;
+          downloadFileButton.target = "_blank";
+          downloadFileButton.download = id + ".csv";
+        });
 
         // remove duplicate data
 
