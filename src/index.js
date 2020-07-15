@@ -28,6 +28,74 @@ let sectionAddedclsNbr = new Set();
 let sectionAddedCourse = new Set();
 let sectionAddedDetails = [];
 
+// update Student List
+document.querySelector("#upStButton").addEventListener("click", () => {
+  let files = document.querySelector("#listInput").files;
+  if (!files) return;
+  let file = files[0];
+  let reader = new FileReader();
+
+  reader.readAsBinaryString(file);
+
+  reader.onload = () => {
+    let workbook = XLSX.read(reader.result, {
+      type: "binary",
+    });
+    workbook.SheetNames.forEach((sheetName) => {
+      let data = XLSX.utils.sheet_to_row_object_array(
+        workbook.Sheets[sheetName]
+      );
+
+      if (!(data[0]["Student ID"] && data[0]["Student Name"])) return;
+
+      for (let i = 0; i < data.length; i++) {
+        axios
+          .put("http://localhost:3000/sList", {
+            id: data[i]["Student ID"],
+            name: data[i]["Student Name"],
+          })
+          .then((res) => {
+            console.log(res);
+            console.log("successfully added");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  };
+});
+
+// update timetable
+document.querySelector("#upTtButton").addEventListener("click", () => {
+  let files = document.querySelector("#listInput").files;
+  if (!files) return;
+  let file = files[0];
+  let reader = new FileReader();
+
+  reader.readAsBinaryString(file);
+
+  reader.onload = () => {
+    let workbook = XLSX.read(reader.result, {
+      type: "binary",
+    });
+    workbook.SheetNames.forEach((sheetName) => {
+      let data = XLSX.utils.sheet_to_row_object_array(
+        workbook.Sheets[sheetName]
+      );
+
+      if (!data["Course ID"]) return;
+
+      axios
+        .put("/ttupdate", {
+          courseData: data,
+        })
+        .then((res) => console.log("successfully updated"))
+        .then((err) => console.log(err));
+    });
+  };
+});
+
 // search function
 filter.addEventListener("keyup", () => {
   let text = filter.value.toUpperCase();
@@ -565,7 +633,7 @@ const getTT = (id, collitp) => {
           for (let i = 0; i < tableBodydivs.length; i++) {
             data.push(
               Array.from(tableBodydivs[i].children).reduce(
-                (text, el) => (text += el.innerText + ","),
+                (text, el) => text + el.innerText + ",",
                 ""
               )
             );

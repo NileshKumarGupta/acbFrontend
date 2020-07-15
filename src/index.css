@@ -44,3 +44,12 @@ img {
   max-height: 100%;
   object-fit: cover;
 }
+
+input {
+  padding-left: 1rem;
+  max-width: 20rem;
+}
+
+#uploadData {
+  margin-top: 3rem;
+}

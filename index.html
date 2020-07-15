@@ -82,6 +82,7 @@
             id="downloadButton"
             style="display: none;"
           >
+            <i class="material-icons right">cloud_download</i>
             Download TimeTable
           </a>
         </div>
@@ -240,9 +241,27 @@
       </div>
     </div>
 
+    <div id="uploadData">
+      <div id="uploadStudentList">
+        <blockquote>Upload Student List</blockquote>
+        <input type="file" id="listInput" />
+        <a class="waves-effect waves-light btn" id="upStButton">
+          <i class="material-icons right">cloud_upload</i>Upload
+        </a>
+      </div>
+      <div id="uploadTimeTable">
+        <blockquote>Upload Timetable</blockquote>
+        <input type="file" id="ttInput" />
+        <a class="waves-effect waves-light btn" id="upTtButton">
+          <i class="material-icons right">cloud_upload</i>Upload
+        </a>
+      </div>
+    </div>
     <script type="text/javascript" src="src/materialize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.3/xlsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.3/xlsx.full.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js"></script> -->
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js -->
     <script src="src/index.js"></script>
   </body>
 </html>
