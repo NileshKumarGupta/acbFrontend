@@ -94,6 +94,7 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
         { raw: false }
       );
       console.log("dataLoaded");
+      console.log(data);
 
       if (!data[0]["Course ID"]) return;
       console.log(data);
@@ -107,8 +108,6 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
           let last = 0;
           let end = Math.min(50, data.length - 1);
           while (end != data.length) {
-            last = end;
-            end = Math.min(last + 50, data.length);
             axios
               .post("https://acbdata.herokuapp.com/ttUpdate", {
                 courseData: data.slice(last, end),
@@ -118,18 +117,20 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
                 M.toast({ html: "Saving" });
               })
               .catch((err) => console.log(err));
+            last = end;
+            end = Math.min(last + 50, data.length);
           }
 
-          setInterval(() => {
-            if (total >= data.length / 50) {
-              total = 0;
-              M.toast({ html: "Succesfully Saved" });
-              setTimeout(
-                () => (window.location = "https://acbsoftware.netlify.app"),
-                2000
-              );
-            }
-          }, 2000);
+          // setInterval(() => {
+          //   if (total >= data.length / 50) {
+          //     total = 0;
+          //     M.toast({ html: "Succesfully Saved" });
+          //     setTimeout(
+          //       () => (window.location = "https://acbsoftware.netlify.app"),
+          //       2000
+          //     );
+          //   }
+          // }, 2000);
         })
         .catch((err) => console.log(err));
     });
@@ -663,6 +664,7 @@ const getTT = (id, collitp) => {
   let collitParent = collitp.parentElement;
   collitParent.innerHTML = "";
   studentListDiv.style.display = "none";
+  document.querySelector("#uploadData").style.display = "none";
   document.querySelector("#preSecLoader").style.display = "block";
   axios
     .get("https://acbdata.herokuapp.com/student/tt", {
