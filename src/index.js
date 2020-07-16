@@ -43,35 +43,44 @@ document.querySelector("#upStButton").addEventListener("click", () => {
     });
     workbook.SheetNames.forEach((sheetName) => {
       let data = XLSX.utils.sheet_to_row_object_array(
-        workbook.Sheets[sheetName]
+        workbook.Sheets[sheetName],
+        { raw: false }
       );
+      console.log(data);
 
-      if (!(data[0]["Student ID"] && data[0]["Student Name"])) return;
+      if (!(data[0]["studid"] && data[0]["name"])) return;
 
-      for (let i = 0; i < data.length; i++) {
-        axios
-          .put("http://localhost:3000/sList", {
-            id: data[i]["Student ID"],
-            name: data[i]["Student Name"],
-          })
-          .then((res) => {
-            console.log(res);
-            console.log("successfully added");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      console.log(data);
+      axios
+        .put("https://acbdata.herokuapp.com/slDelete")
+        .then((res) => {
+          M.toast({ html: "Saving" });
+          axios
+            .post("https://acbdata.herokuapp.com/slUpdate", {
+              studentData: data,
+            })
+            .then((res) => {
+              M.toast({ html: "Successfully Saved" });
+              setTimeout(
+                () => (window.location = "https://acbsoftware.netlify.app"),
+                2000
+              );
+            })
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
     });
   };
 });
 
 // update timetable
 document.querySelector("#upTtButton").addEventListener("click", () => {
-  let files = document.querySelector("#listInput").files;
+  let files = document.querySelector("#ttInput").files;
   if (!files) return;
   let file = files[0];
   let reader = new FileReader();
+
+  console.log("This function is executing");
 
   reader.readAsBinaryString(file);
 
@@ -81,17 +90,110 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
     });
     workbook.SheetNames.forEach((sheetName) => {
       let data = XLSX.utils.sheet_to_row_object_array(
-        workbook.Sheets[sheetName]
+        workbook.Sheets[sheetName],
+        { raw: false }
       );
+      console.log("dataLoaded");
 
-      if (!data["Course ID"]) return;
+      if (!data[0]["Course ID"]) return;
+      console.log(data);
+      console.log(data.slice(0, 100));
 
       axios
-        .put("/ttupdate", {
-          courseData: data,
+        .put("https://acbdata.herokuapp.com/ttdelete")
+        .then((res) => {
+          let total = 1;
+          console.log(res);
+          let last = 0;
+          let end = Math.min(50, data.length - 1);
+          while (end != data.length) {
+            last = end;
+            end = Math.min(last + 50, data.length);
+            axios
+              .post("https://acbdata.herokuapp.com/ttUpdate", {
+                courseData: data.slice(last, end),
+              })
+              .then((res) => {
+                total++;
+                M.toast({ html: "Saving" });
+              })
+              .catch((err) => console.log(err));
+          }
+
+          setInterval(() => {
+            if (total >= data.length / 50) {
+              total = 0;
+              M.toast({ html: "Succesfully Saved" });
+              setTimeout(
+                () => (window.location = "https://acbsoftware.netlify.app"),
+                2000
+              );
+            }
+          }, 2000);
         })
-        .then((res) => console.log("successfully updated"))
-        .then((err) => console.log(err));
+        .catch((err) => console.log(err));
+    });
+  };
+});
+
+document.querySelector("#upPqButton").addEventListener("click", () => {
+  let files = document.querySelector("#PqInput").files;
+  if (!files) return;
+  let file = files[0];
+  let reader = new FileReader();
+
+  console.log("This function is executing");
+
+  reader.readAsBinaryString(file);
+
+  reader.onload = () => {
+    let workbook = XLSX.read(reader.result, {
+      type: "binary",
+    });
+    workbook.SheetNames.forEach((sheetName) => {
+      let data = XLSX.utils.sheet_to_row_object_array(
+        workbook.Sheets[sheetName],
+        { raw: false }
+      );
+      console.log("dataLoaded");
+
+      if (!data[0]["Course ID"]) return;
+      console.log(data);
+      console.log(data.slice(0, 100));
+
+      axios
+        .put("https://acbdata.herokuapp.com/pqdelete")
+        .then((res) => {
+          let total = 1;
+          console.log(res);
+          let last = 0;
+          let end = Math.min(50, data.length - 1);
+          while (end != data.length) {
+            last = end;
+            end = Math.min(last + 50, data.length);
+            axios
+              .post("https://acbdata.herokuapp.com/pqUpdate", {
+                courseData: data.slice(last, end),
+              })
+              .then((res) => {
+                total++;
+                M.toast({ html: "Saving" });
+              })
+              .catch((err) => console.log(err));
+          }
+
+          setInterval(() => {
+            if (total >= data.length / 50) {
+              total = 0;
+              M.toast({ html: "Succesfully Saved" });
+              setTimeout(
+                () => (window.location = "https://acbsoftware.netlify.app"),
+                2000
+              );
+            }
+          }, 2000);
+        })
+        .catch((err) => console.log(err));
     });
   };
 });
@@ -266,7 +368,7 @@ saveButton.addEventListener("click", () => {
       tt: toSendData,
     })
     .then(() => {
-      M.toast({ html: "Saved Successfully" });
+      M.toast({ html: "Successfully saved" });
       saveButton.href = "index.html";
       window.location = "https://acbsoftware.netlify.app";
     })
@@ -716,6 +818,7 @@ axios
   .get("https://acbdata.herokuapp.com/student")
   .then((res) => {
     studentListDiv.querySelector(".preloader-wrapper").style.display = "none";
+    console.log(res.data);
     res.data.forEach((element) => {
       let collit = document.createElement("a");
       collit.href = "#";
