@@ -28,6 +28,65 @@ let sectionAddedclsNbr = new Set();
 let sectionAddedCourse = new Set();
 let sectionAddedDetails = [];
 
+// download all students timetable
+document.querySelector("#downloadAllButton").addEventListener("click", () => {
+  axios
+    .get("https://acbdata.herokuapp.com/student")
+    .then((res) => {
+      let studentList = res.data;
+      let totalData = ["StudentID, StudentName, Section, ClassNbr"];
+      let studentProcessed = 0;
+      studentList.forEach((student) => {
+        axios
+          .get("https://acbdata.herokuapp.com/student/tt", {
+            params: {
+              studid: student.studid,
+            },
+          })
+          .then((res) => {
+            let studenttt = res.data.tt;
+            let ttstring = studenttt.join(",");
+            let studentCourses = new Set();
+            ttstring.split(",").forEach((detail) => {
+              if (!detail || detail == "-") return;
+              studentCourses.add(detail);
+            });
+            // Department, Course, Section : classnbr
+            Array.from(studentCourses).forEach((courseDetail) => {
+              console.log(courseDetail);
+              let strow = "";
+              strow += student.studid + ",";
+              strow += student.name + ",";
+              strow +=
+                courseDetail.split(" ")[0] +
+                courseDetail.split(" ")[1] +
+                "-" +
+                courseDetail.split(" ")[2].split(":")[0] +
+                ",";
+              strow += courseDetail.split(":")[1];
+              totalData.push(strow);
+            });
+            studentProcessed++;
+            if (studentProcessed == studentList.length) {
+              console.log("this was called");
+              let csvString = totalData.join("%0A");
+              let downloadFileButton = document.querySelector(
+                "#downloadAllButton"
+              );
+              downloadFileButton.href = "data:attachment/csv," + csvString;
+              downloadFileButton.target = "_blank";
+              downloadFileButton.download = "All Students" + ".csv";
+              window.location = downloadFileButton.href;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    })
+    .catch((err) => console.log(err));
+});
+
 // update Student List
 document.querySelector("#upStButton").addEventListener("click", () => {
   let files = document.querySelector("#listInput").files;
@@ -121,16 +180,16 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
             end = Math.min(last + 50, data.length);
           }
 
-          // setInterval(() => {
-          //   if (total >= data.length / 50) {
-          //     total = 0;
-          //     M.toast({ html: "Succesfully Saved" });
-          //     setTimeout(
-          //       () => (window.location = "https://acbsoftware.netlify.app"),
-          //       2000
-          //     );
-          //   }
-          // }, 2000);
+          setInterval(() => {
+            if (total >= data.length / 50) {
+              total = 0;
+              M.toast({ html: "Succesfully Saved" });
+              setTimeout(
+                () => (window.location = "https://acbsoftware.netlify.app"),
+                2000
+              );
+            }
+          }, 2000);
         })
         .catch((err) => console.log(err));
     });
