@@ -76,7 +76,7 @@ document.querySelector("#downloadAllButton").addEventListener("click", () => {
               downloadFileButton.href = "data:attachment/csv," + csvString;
               downloadFileButton.target = "_blank";
               downloadFileButton.download = "All Students" + ".csv";
-              window.location = downloadFileButton.href;
+              // window.location = downloadFileButton.href;
             }
           })
           .catch((err) => {
