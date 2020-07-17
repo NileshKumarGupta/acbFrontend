@@ -70,13 +70,14 @@ document.querySelector("#downloadAllButton").addEventListener("click", () => {
             if (studentProcessed == studentList.length) {
               console.log("this was called");
               let csvString = totalData.join("%0A");
-              let downloadFileButton = document.querySelector(
-                "#downloadAllButton"
-              );
+              // let downloadFileButton = document.querySelector(
+              //   "#downloadAllButton"
+              // );
+              let downloadFileButton = document.querySelector("#dummyLink");
               downloadFileButton.href = "data:attachment/csv," + csvString;
               downloadFileButton.target = "_blank";
               downloadFileButton.download = "All Students" + ".csv";
-              // window.location = downloadFileButton.href;
+              downloadFileButton.click();
             }
           })
           .catch((err) => {
@@ -530,6 +531,42 @@ const removeFromTT = (csNr, collitp) => {
       finalDetails = [];
       finalDetails.push(res.data[0]);
 
+      // remove from sectionAddedDetails
+
+      let reqclsnum = res.data[0]["Class Nbr"];
+      sectionAddedDetails = sectionAddedDetails.filter((val) => {
+        if (val.split(":")[1] != reqclsnum) return val;
+      });
+
+      // move to available section List
+
+      let collit = document.createElement("a");
+      collit.href = "#";
+      collit.className = "collection-item";
+      collit.innerText =
+        res.data[0].Subject +
+        res.data[0].Catalog +
+        " " +
+        res.data[0]["Course Title"] +
+        " " +
+        res.data[0].Section;
+
+      let addIcon = document.createElement("i");
+      addIcon.className = "material-icons";
+      addIcon.innerText = "add";
+      addIcon.style.float = "right";
+
+      addIcon.addEventListener("click", () =>
+        addToTT(res.data[0]["Class Nbr"], collit)
+      );
+
+      collit.appendChild(addIcon);
+      sectionAvldiv.insertBefore(
+        collit,
+        sectionAvldiv.firstElementChild.nextSibling
+      );
+      // remove from timetable
+      if (!res.data.hasOwnProperty("Mtg Start")) return;
       if (res.data.length != 1) {
         for (let i = 1; i < res.data.length; i++) {
           if (
@@ -577,41 +614,6 @@ const removeFromTT = (csNr, collitp) => {
           }
         });
       });
-
-      // remove from sectionAddedDetails
-
-      let reqclsnum = res.data[0]["Class Nbr"];
-      sectionAddedDetails = sectionAddedDetails.filter((val) => {
-        if (val.split(":")[1] != reqclsnum) return val;
-      });
-
-      // move to available section List
-
-      let collit = document.createElement("a");
-      collit.href = "#";
-      collit.className = "collection-item";
-      collit.innerText =
-        res.data[0].Subject +
-        res.data[0].Catalog +
-        " " +
-        res.data[0]["Course Title"] +
-        " " +
-        res.data[0].Section;
-
-      let addIcon = document.createElement("i");
-      addIcon.className = "material-icons";
-      addIcon.innerText = "add";
-      addIcon.style.float = "right";
-
-      addIcon.addEventListener("click", () =>
-        addToTT(res.data[0]["Class Nbr"], collit)
-      );
-
-      collit.appendChild(addIcon);
-      sectionAvldiv.insertBefore(
-        collit,
-        sectionAvldiv.firstElementChild.nextSibling
-      );
     })
     .catch((err) => {
       console.log(err);
@@ -646,6 +648,7 @@ const addToTT = (csNr, collitp) => {
       console.log(finalDetails);
 
       finalDetails.forEach((data) => {
+        if (!data.hasOwnProperty("Mtg Start")) return;
         let startTime = parseInt(data["Mtg Start"].split(":")[0], 10);
         if (startTime < 8) startTime += 12;
         let endTime = parseInt(data["End time"].split(":")[0], 10);
