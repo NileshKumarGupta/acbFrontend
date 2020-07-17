@@ -166,7 +166,6 @@ document.querySelector("#upPqButton").addEventListener("click", () => {
         .put("https://acbdata.herokuapp.com/pqdelete")
         .then((res) => {
           let total = 1;
-          console.log(res);
           let last = 0;
           let end = Math.min(50, data.length - 1);
           while (end != data.length) {
@@ -585,6 +584,8 @@ const addToTT = (csNr, collitp) => {
         }
       }
 
+      console.log(finalDetails);
+
       finalDetails.forEach((data) => {
         let startTime = parseInt(data["Mtg Start"].split(":")[0], 10);
         if (startTime < 8) startTime += 12;
@@ -654,10 +655,10 @@ const addToTT = (csNr, collitp) => {
       collit.appendChild(addIcon);
 
       sectionAdddiv.appendChild(collit);
-    })
-    .catch((err) => {
-      console.log(err);
     });
+  // .catch((err) => {
+  //   console.log(err);
+  // });
 };
 
 const getTT = (id, collitp) => {
