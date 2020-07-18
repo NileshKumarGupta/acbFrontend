@@ -465,6 +465,7 @@ validateButton.addEventListener("click", () => {
     .then((res) => {
       examSchedule = new Set();
       res.data.forEach((info) => {
+        if (!info.hasOwnProperty("Exam Tm Cd")) return;
         let examstr =
           info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
