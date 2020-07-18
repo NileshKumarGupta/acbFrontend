@@ -470,6 +470,7 @@ validateButton.addEventListener("click", () => {
           info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
       });
+      console.log(examSchedule);
       examClashes = [];
       examSchedule = Array.from(examSchedule);
       for (let i = 0; i < examSchedule.length; i++) {
@@ -524,6 +525,7 @@ const removeFromTT = (csNr, collitp) => {
   // remove data from timetable
   // remove from section Added List
   // Add to sectionAvailable list
+  console.log(csNr);
   collitp.remove();
   axios
     .get("https://acbdata.herokuapp.com/timings", {
