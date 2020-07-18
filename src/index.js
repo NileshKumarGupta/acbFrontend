@@ -301,7 +301,7 @@ document.querySelector("#exambtn").addEventListener("click", () => {
       examSchedule = new Set();
       res.data.forEach((info) => {
         let examstr =
-          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+          info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
       });
       examClashes = [];
@@ -463,7 +463,7 @@ validateButton.addEventListener("click", () => {
       examSchedule = new Set();
       res.data.forEach((info) => {
         let examstr =
-          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+          info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
       });
       examClashes = [];
@@ -547,7 +547,7 @@ const removeFromTT = (csNr, collitp) => {
         res.data[0].Subject +
         res.data[0].Catalog +
         " " +
-        res.data[0]["Course Title"] +
+        res.data[0]["COURSETITLE"] +
         " " +
         res.data[0].Section;
 
@@ -859,7 +859,7 @@ const getTT = (id, collitp) => {
             element.Subject +
             element.Catalog +
             " " +
-            element["Course Title"] +
+            element["COURSETITLE"] +
             " " +
             element.Section;
 
