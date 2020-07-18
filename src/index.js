@@ -301,7 +301,7 @@ document.querySelector("#exambtn").addEventListener("click", () => {
       examSchedule = new Set();
       res.data.forEach((info) => {
         let examstr =
-          info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
       });
       examClashes = [];
@@ -463,7 +463,7 @@ validateButton.addEventListener("click", () => {
       examSchedule = new Set();
       res.data.forEach((info) => {
         let examstr =
-          info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
       });
       examClashes = [];
@@ -547,7 +547,7 @@ const removeFromTT = (csNr, collitp) => {
         res.data[0].Subject +
         res.data[0].Catalog +
         " " +
-        res.data[0]["COURSETITLE"] +
+        res.data[0]["Course Title"] +
         " " +
         res.data[0].Section;
 
@@ -566,7 +566,7 @@ const removeFromTT = (csNr, collitp) => {
         sectionAvldiv.firstElementChild.nextSibling
       );
       // remove from timetable
-      if (!res.data.hasOwnProperty("Mtg Start")) return;
+      if (!res.data[0].hasOwnProperty("Mtg Start")) return;
       if (res.data.length != 1) {
         for (let i = 1; i < res.data.length; i++) {
           if (
@@ -730,6 +730,8 @@ const getTT = (id, collitp) => {
   document.querySelector("#uploadData").style.display = "none";
   document.querySelector("#slt").style.display = "none";
   document.querySelector("#preSecLoader").style.display = "block";
+  document.querySelector("#toHide").style.display = "none";
+  document.querySelector("#downloadAllButton").style.display = "none";
   axios
     .get("https://acbdata.herokuapp.com/student/tt", {
       params: {
@@ -849,15 +851,17 @@ const getTT = (id, collitp) => {
         // Add to sectionAvailable
 
         sectionAvailable.forEach((element) => {
+          // console.log(element);
           let collit = document.createElement("a");
           collit.href = "#";
           collit.className = "collection-item";
           collit.innerText =
             element.Subject +
             element.Catalog +
-            " " + element["COURSETITLE"] +
             " " +
-            element.Section
+            element["Course Title"] +
+            " " +
+            element.Section;
 
           let addIcon = document.createElement("i");
           addIcon.className = "material-icons";
@@ -883,7 +887,6 @@ axios
   .get("https://acbdata.herokuapp.com/student")
   .then((res) => {
     studentListDiv.querySelector(".preloader-wrapper").style.display = "none";
-    console.log(res.data);
     res.data.forEach((element) => {
       let collit = document.createElement("a");
       collit.href = "#";

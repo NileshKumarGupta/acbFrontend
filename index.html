@@ -27,38 +27,32 @@
 
     <div class="row">
       <!-- Student List and Section List -->
+      <div class="col s3" id="toHide">
         <blockquote id="slt">
           <h4>Student List</h4>
-          <a class="waves-effect waves-light btn" id="downloadAllButton">
-            <i class="material-icons right">cloud_download</i>
-            Download All Students TimeTable
-          </a>
-          <a id="dummyLink" style="display: none;"></a>
         </blockquote>
-      <div class="collection col s3" id="studentList">
-        <!-- <blockquote>
-          <h4>Student List</h4>
-          <a class="waves-effect waves-light btn" id="downloadAllButton">
-            <i class="material-icons right">cloud_download</i>
-            Download All Students TimeTable
-          </a>
-          <a id="dummyLink" style="display: none;"></a>
-        </blockquote> -->
-        <div class="divider"></div>
-        <!-- preloader template -->
-        <div
-          class="preloader-wrapper big active"
-          style="display: block; margin: 2rem auto;"
-        >
-          <div class="spinner-layer spinner-red-only">
-            <div class="circle-clipper left">
-              <div class="circle"></div>
-            </div>
-            <div class="gap-patch">
-              <div class="circle"></div>
-            </div>
-            <div class="circle-clipper right">
-              <div class="circle"></div>
+        <a class="waves-effect waves-light btn" id="downloadAllButton">
+          <i class="material-icons right">cloud_download</i>
+          Download All
+        </a>
+        <a id="dummyLink" style="display: none;"></a>
+        <div class="collection" id="studentList">
+          <div class="divider"></div>
+          <!-- preloader template -->
+          <div
+            class="preloader-wrapper big active"
+            style="display: block; margin: 2rem auto;"
+          >
+            <div class="spinner-layer spinner-red-only">
+              <div class="circle-clipper left">
+                <div class="circle"></div>
+              </div>
+              <div class="gap-patch">
+                <div class="circle"></div>
+              </div>
+              <div class="circle-clipper right">
+                <div class="circle"></div>
+              </div>
             </div>
           </div>
         </div>
