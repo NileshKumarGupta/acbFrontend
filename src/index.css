@@ -55,3 +55,9 @@ input {
   /* display: grid;
   grid-template-columns: 1fr 1fr 1fr; */
 }
+
+#studentList {
+  height: 60vh;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}

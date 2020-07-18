@@ -301,7 +301,7 @@ document.querySelector("#exambtn").addEventListener("click", () => {
       examSchedule = new Set();
       res.data.forEach((info) => {
         let examstr =
-          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+          info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
       });
       examClashes = [];
@@ -463,7 +463,7 @@ validateButton.addEventListener("click", () => {
       examSchedule = new Set();
       res.data.forEach((info) => {
         let examstr =
-          info["Course Title"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+          info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
       });
       examClashes = [];
@@ -547,7 +547,7 @@ const removeFromTT = (csNr, collitp) => {
         res.data[0].Subject +
         res.data[0].Catalog +
         " " +
-        res.data[0]["Course Title"] +
+        res.data[0]["COURSETITLE"] +
         " " +
         res.data[0].Section;
 
@@ -728,6 +728,7 @@ const getTT = (id, collitp) => {
   collitParent.innerHTML = "";
   studentListDiv.style.display = "none";
   document.querySelector("#uploadData").style.display = "none";
+  document.querySelector("#slt").style.display = "none";
   document.querySelector("#preSecLoader").style.display = "block";
   axios
     .get("https://acbdata.herokuapp.com/student/tt", {
@@ -854,10 +855,9 @@ const getTT = (id, collitp) => {
           collit.innerText =
             element.Subject +
             element.Catalog +
+            " " + element["COURSETITLE"] +
             " " +
-            element["Course Title"] +
-            " " +
-            element.Section;
+            element.Section
 
           let addIcon = document.createElement("i");
           addIcon.className = "material-icons";
