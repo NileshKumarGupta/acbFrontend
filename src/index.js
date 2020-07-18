@@ -299,11 +299,14 @@ document.querySelector("#exambtn").addEventListener("click", () => {
         .querySelector("#examClashList")
         .querySelector(".preloader-wrapper").style.display = "none";
       examSchedule = new Set();
+      console.log(res.data);
       res.data.forEach((info) => {
-        let examstr =
-          info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
+        if (!info.hasOwnProperty("Exam Tm Cd")) return;
+        let examstr = info["COURSETITLE"] + ":" + info["Exam Tm Cd"];
+        "" + info["Exam Date"];
         examSchedule.add(examstr);
       });
+      console.log(examSchedule);
       examClashes = [];
       examSchedule = Array.from(examSchedule);
       for (let i = 0; i < examSchedule.length; i++) {
@@ -672,10 +675,10 @@ const addToTT = (csNr, collitp) => {
             let tddivs = Array.from(tableBodydivs[i - 8].children);
             if (tddivs[dayIndex].innerText == "-")
               tddivs[dayIndex].innerText =
-                data.Subject + data.Catalog + " " + data.Section;
+                data.Subject + " " + data.Catalog + " " + data.Section;
             else {
               tddivs[dayIndex].innerText +=
-                " " + data.Subject + data.Catalog + " " + data.Section;
+                " " + data.Subject + " " + data.Catalog + " " + data.Section;
               tddivs[dayIndex].style.backgroundColor = "#EE6E73";
             }
             tddivs[dayIndex].innerText = tddivs[dayIndex].innerText.trim();
@@ -689,7 +692,11 @@ const addToTT = (csNr, collitp) => {
       collit.href = "#";
       collit.className = "collection-item";
       collit.innerText =
-        res.data[0].Subject + res.data[0].Catalog + " " + res.data[0].Section;
+        res.data[0].Subject +
+        " " +
+        res.data[0].Catalog +
+        " " +
+        res.data[0].Section;
 
       let addIcon = document.createElement("i");
       addIcon.className = "material-icons";
