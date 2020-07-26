@@ -5,7 +5,8 @@ const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
 const backButton = document.querySelector("#backButton");
 const filter = document.querySelector("#filter");
-const backendString = "https://acbdata.herokuapp.com";
+//const backendString = "https://acbdata.herokuapp.com";
+const backendString = "http://localhost:3000";
 
 // intializing Materailize js class
 M.AutoInit();
@@ -33,7 +34,7 @@ let sectionAddedDetails = [];
 
 const downloadAll = () => {
   axios
-    .get(backendString + "/student")
+    .get(backendString + "/student2")
     .then((res) => {
       let studentList = res.data;
       let totalData = ["StudentID, StudentName, Section, ClassNbr"];
@@ -119,11 +120,11 @@ document.querySelector("#upStButton").addEventListener("click", () => {
 
       console.log(data);
       axios
-        .put(backendString + "/slDelete")
+        .put(backendString + "/slDelete2")
         .then((res) => {
           M.toast({ html: "Saving" });
           axios
-            .post(backendString + "/slUpdate", {
+            .post(backendString + "/slUpdate2", {
               studentData: data,
             })
             .then((res) => {
@@ -439,7 +440,7 @@ saveButton.addEventListener("click", () => {
   // console.log(toSendData.toString());
   M.toast({ html: "Saving" });
   axios
-    .put(backendString + "/student/" + currentID, {
+    .put(backendString + "/student2/" + currentID, {
       id: currentID,
       tt: toSendData,
     })
@@ -755,7 +756,7 @@ const getTT = (id, collitp) => {
   document.querySelector("#toHide").style.display = "none";
   document.querySelector("#downloadAllButton").style.display = "none";
   axios
-    .get(backendString + "/student/tt", {
+    .get(backendString + "/student2/tt", {
       params: {
         studid: id,
       },
@@ -899,14 +900,14 @@ const getTT = (id, collitp) => {
           sectionAvldiv.appendChild(collit);
         });
       });
-    })
-    .catch((err) => {
-      console.log(err);
     });
+  // .catch((err) => {
+  //   console.log(err);
+  // });
 };
 
 axios
-  .get(backendString + "/student")
+  .get(backendString + "/student2")
   .then((res) => {
     studentListDiv.querySelector(".preloader-wrapper").style.display = "none";
     res.data.forEach((element) => {
