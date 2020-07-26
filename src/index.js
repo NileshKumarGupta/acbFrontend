@@ -96,7 +96,7 @@ document
 
 // update Student List
 document.querySelector("#upStButton").addEventListener("click", () => {
-  let csvDownload = downloadAll();
+  //let csvDownload = downloadAll();
   let files = document.querySelector("#listInput").files;
   if (!files) return;
   let file = files[0];
@@ -128,16 +128,10 @@ document.querySelector("#upStButton").addEventListener("click", () => {
             })
             .then((res) => {
               M.toast({ html: "Successfully Saved" });
-              /*
               setTimeout(
                 () => (window.location = "https://acbsoftware.netlify.app"),
                 5000
               );
-              */
-              setInterval(() => {
-                if (csvDownload)
-                  window.location = "https://acbsoftware.netlify.app";
-              }, 500);
             })
             .catch((err) => console.log(err));
         })
@@ -650,16 +644,22 @@ const addToTT = (csNr, collitp) => {
       if (!saveButton.className.includes("disabled"))
         saveButton.classList.toggle("disabled");
 
+      console.log(res.data[0]);
+
       finalDetails = [];
       finalDetails.push(res.data[0]);
 
       if (res.data.length != 1) {
         for (let i = 1; i < res.data.length; i++) {
-          if (
-            res.data[i]["Class Pattern"] + res.data[i]["Mtg Start"] !=
-            res.data[i - 1]["Class Pattern"] + res.data[i - 1]["Mtg Start"]
-          )
-            finalDetails.push(res.data[i]);
+          let present = false;
+          for (let j = 0; j < finalDetails.length; j++) {
+            if (
+              res.data[i]["Class Pattern"] + res.data[i]["Mtg Start"] ==
+              finalDetails[j]["Class Pattern"] + finalDetails[j]["Mtg Start"]
+            )
+              present = true;
+          }
+          if (!present) finalDetails.push(res.data[i]);
         }
       }
 

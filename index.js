@@ -5,8 +5,7 @@ const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
 const backButton = document.querySelector("#backButton");
 const filter = document.querySelector("#filter");
-//const backendString = "https://acbdata.herokuapp.com";
-const backendString = "http://localhost:3000";
+const backendString = "https://acbdata.herokuapp.com";
 
 // intializing Materailize js class
 M.AutoInit();
@@ -41,13 +40,15 @@ const downloadAll = () => {
       let studentProcessed = 0;
       studentList.forEach((student) => {
         axios
-          .get(backendString + "/student/tt", {
+          .get(backendString + "/student2/tt", {
             params: {
               studid: student.studid,
             },
           })
-          .then((res) => {
-            let studenttt = res.data.tt;
+          .then((response) => {
+            console.log(response.data.tt);
+            let studenttt = response.data.tt;
+            console.log(studenttt);
             let ttstring = studenttt.join(",");
             let studentCourses = new Set();
             ttstring.split(",").forEach((detail) => {
@@ -97,7 +98,7 @@ document
 
 // update Student List
 document.querySelector("#upStButton").addEventListener("click", () => {
-  let csvDownload = downloadAll();
+  // let csvDownload = downloadAll();
   let files = document.querySelector("#listInput").files;
   if (!files) return;
   let file = files[0];
@@ -131,13 +132,13 @@ document.querySelector("#upStButton").addEventListener("click", () => {
               M.toast({ html: "Successfully Saved" });
               /*
               setTimeout(
-                () => (window.location = "https://acbsoftware.netlify.app"),
+                () => (window.location = "https://acbalt2.netlify.app"),
                 5000
               );
               */
               setInterval(() => {
                 if (csvDownload)
-                  window.location = "https://acbsoftware.netlify.app";
+                  window.location = "https://acbalt2.netlify.app";
               }, 500);
             })
             .catch((err) => console.log(err));
@@ -200,7 +201,7 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
               total = 0;
               M.toast({ html: "Succesfully Saved" });
               setTimeout(
-                () => (window.location = "https://acbsoftware.netlify.app"),
+                () => (window.location = "https://acbalt2.netlify.app"),
                 2000
               );
             }
@@ -261,7 +262,7 @@ document.querySelector("#upPqButton").addEventListener("click", () => {
               total = 0;
               M.toast({ html: "Succesfully Saved" });
               setTimeout(
-                () => (window.location = "https://acbsoftware.netlify.app"),
+                () => (window.location = "https://acbalt2.netlify.app"),
                 2000
               );
             }
@@ -285,7 +286,7 @@ filter.addEventListener("keyup", () => {
 // backButton function
 backButton.addEventListener("click", () => {
   if (confirm("Warning: All unsaved data will be lost"))
-    window.location = "https://acbsoftware.netlify.com";
+    window.location = "https://acbalt2.netlify.com";
 });
 
 // Exam schedule Modal function
@@ -447,7 +448,7 @@ saveButton.addEventListener("click", () => {
     .then(() => {
       M.toast({ html: "Successfully saved" });
       saveButton.href = "index.html";
-      window.location = "https://acbsoftware.netlify.app";
+      window.location = "https://acbalt2.netlify.app";
     })
     .catch((err) => {
       console.log(err);
@@ -656,11 +657,15 @@ const addToTT = (csNr, collitp) => {
 
       if (res.data.length != 1) {
         for (let i = 1; i < res.data.length; i++) {
-          if (
-            res.data[i]["Class Pattern"] + res.data[i]["Mtg Start"] !=
-            res.data[i - 1]["Class Pattern"] + res.data[i - 1]["Mtg Start"]
-          )
-            finalDetails.push(res.data[i]);
+          let present = false;
+          for (let j = 0; j < finalDetails.length; j++) {
+            if (
+              res.data[i]["Class Pattern"] + res.data[i]["Mtg Start"] ==
+              finalDetails[j]["Class Pattern"] + finalDetails[j]["Mtg Start"]
+            )
+              present = true;
+          }
+          if (!present) finalDetails.push(res.data[i]);
         }
       }
 
