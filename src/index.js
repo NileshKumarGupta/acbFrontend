@@ -5,6 +5,8 @@ const validateButton = document.querySelector("#validateButton");
 const saveButton = document.querySelector("#saveButton");
 const backButton = document.querySelector("#backButton");
 const filter = document.querySelector("#filter");
+//const backendString = "https://acbdata.herokuapp.com";
+const backendString = "http://localhost:3000";
 
 // intializing Materailize js class
 M.AutoInit();
@@ -29,16 +31,17 @@ let sectionAddedCourse = new Set();
 let sectionAddedDetails = [];
 
 // download all students timetable
-document.querySelector("#downloadAllButton").addEventListener("click", () => {
+
+const downloadAll = () => {
   axios
-    .get("https://acbdata.herokuapp.com/student")
+    .get(backendString + "/student")
     .then((res) => {
       let studentList = res.data;
       let totalData = ["StudentID, StudentName, Section, ClassNbr"];
       let studentProcessed = 0;
       studentList.forEach((student) => {
         axios
-          .get("https://acbdata.herokuapp.com/student/tt", {
+          .get(backendString + "/student/tt", {
             params: {
               studid: student.studid,
             },
@@ -84,12 +87,17 @@ document.querySelector("#downloadAllButton").addEventListener("click", () => {
             console.log(err);
           });
       });
+      return true;
     })
     .catch((err) => console.log(err));
-});
+};
+document
+  .querySelector("#downloadAllButton")
+  .addEventListener("click", downloadAll);
 
 // update Student List
 document.querySelector("#upStButton").addEventListener("click", () => {
+  let csvDownload = downloadAll();
   let files = document.querySelector("#listInput").files;
   if (!files) return;
   let file = files[0];
@@ -112,19 +120,25 @@ document.querySelector("#upStButton").addEventListener("click", () => {
 
       console.log(data);
       axios
-        .put("https://acbdata.herokuapp.com/slDelete")
+        .put(backendString + "/slDelete")
         .then((res) => {
           M.toast({ html: "Saving" });
           axios
-            .post("https://acbdata.herokuapp.com/slUpdate", {
+            .post(backendString + "/slUpdate", {
               studentData: data,
             })
             .then((res) => {
               M.toast({ html: "Successfully Saved" });
+              /*
               setTimeout(
                 () => (window.location = "https://acbsoftware.netlify.app"),
-                2000
+                5000
               );
+              */
+              setInterval(() => {
+                if (csvDownload)
+                  window.location = "https://acbsoftware.netlify.app";
+              }, 500);
             })
             .catch((err) => console.log(err));
         })
@@ -161,7 +175,7 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
       console.log(data.slice(0, 100));
 
       axios
-        .put("https://acbdata.herokuapp.com/ttdelete")
+        .put(backendString + "/ttdelete")
         .then((res) => {
           let total = 1;
           console.log(res);
@@ -169,7 +183,7 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
           let end = Math.min(50, data.length - 1);
           while (end != data.length) {
             axios
-              .post("https://acbdata.herokuapp.com/ttUpdate", {
+              .post(backendString + "/ttUpdate", {
                 courseData: data.slice(last, end),
               })
               .then((res) => {
@@ -223,7 +237,7 @@ document.querySelector("#upPqButton").addEventListener("click", () => {
       console.log(data.slice(0, 100));
 
       axios
-        .put("https://acbdata.herokuapp.com/pqdelete")
+        .put(backendString + "/pqdelete")
         .then((res) => {
           let total = 1;
           let last = 0;
@@ -232,7 +246,7 @@ document.querySelector("#upPqButton").addEventListener("click", () => {
             last = end;
             end = Math.min(last + 50, data.length);
             axios
-              .post("https://acbdata.herokuapp.com/pqUpdate", {
+              .post(backendString + "/pqUpdate", {
                 courseData: data.slice(last, end),
               })
               .then((res) => {
@@ -289,7 +303,7 @@ document.querySelector("#exambtn").addEventListener("click", () => {
     .querySelectorAll(".collection-item")
     .forEach((it) => it.remove());
   axios
-    .get("https://acbdata.herokuapp.com/exams", {
+    .get(backendString + "/exams", {
       params: {
         clsnr: clnrstr,
       },
@@ -367,7 +381,7 @@ document.querySelector("#prereqbtn").addEventListener("click", () => {
     .querySelectorAll(".collection-item")
     .forEach((it) => it.remove());
   axios
-    .get("https://acbdata.herokuapp.com/prst", {
+    .get(backendString + "/prst", {
       params: {
         courseIdentity: crsIdty,
       },
@@ -426,7 +440,7 @@ saveButton.addEventListener("click", () => {
   // console.log(toSendData.toString());
   M.toast({ html: "Saving" });
   axios
-    .put("https://acbdata.herokuapp.com/student/" + currentID, {
+    .put(backendString + "/student/" + currentID, {
       id: currentID,
       tt: toSendData,
     })
@@ -457,7 +471,7 @@ validateButton.addEventListener("click", () => {
   });
 
   axios
-    .get("https://acbdata.herokuapp.com/exams", {
+    .get(backendString + "/exams", {
       params: {
         clsnr: clnrstr,
       },
@@ -528,7 +542,7 @@ const removeFromTT = (csNr, collitp) => {
   console.log(csNr);
   collitp.remove();
   axios
-    .get("https://acbdata.herokuapp.com/timings", {
+    .get(backendString + "/timings", {
       params: {
         clsNbr: csNr,
       },
@@ -625,11 +639,10 @@ const removeFromTT = (csNr, collitp) => {
       console.log(err);
     });
 };
-
 const addToTT = (csNr, collitp) => {
   collitp.remove();
   axios
-    .get("https://acbdata.herokuapp.com/timings", {
+    .get(backendString + "/timings", {
       params: {
         clsNbr: csNr,
       },
@@ -743,7 +756,7 @@ const getTT = (id, collitp) => {
   document.querySelector("#toHide").style.display = "none";
   document.querySelector("#downloadAllButton").style.display = "none";
   axios
-    .get("https://acbdata.herokuapp.com/student/tt", {
+    .get(backendString + "/student/tt", {
       params: {
         studid: id,
       },
@@ -786,7 +799,7 @@ const getTT = (id, collitp) => {
 
       tableBodydivs = Array.from(document.querySelector("#tableBody").children);
       // load section List
-      axios.get("https://acbdata.herokuapp.com/sectionList").then((res) => {
+      axios.get(backendString + "/sectionList").then((res) => {
         document.querySelector("#preSecLoader").style.display = "none";
         document.querySelector("#sectionAddedHeading").style.display = "block";
         document.querySelector("#sectionAvailableHeading").style.display =
@@ -894,7 +907,7 @@ const getTT = (id, collitp) => {
 };
 
 axios
-  .get("https://acbdata.herokuapp.com/student")
+  .get(backendString + "/student")
   .then((res) => {
     studentListDiv.querySelector(".preloader-wrapper").style.display = "none";
     res.data.forEach((element) => {
