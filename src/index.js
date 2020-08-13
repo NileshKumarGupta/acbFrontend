@@ -163,6 +163,8 @@ document.querySelector("#upTtButton").addEventListener("click", () => {
       console.log("dataLoaded");
       console.log(data);
 
+      console.log(data[0]);
+
       if (!data[0]["Course ID"]) return;
       console.log(data);
       console.log(data.slice(0, 100));
@@ -472,7 +474,8 @@ validateButton.addEventListener("click", () => {
     .then((res) => {
       examSchedule = new Set();
       res.data.forEach((info) => {
-        if (!info.hasOwnProperty("Exam Tm Cd")) return;
+        if (!info.hasOwnProperty("Exam Tm Cd") || info["Exam Tm Cd"] == "")
+          return;
         let examstr =
           info["COURSETITLE"] + ":" + info["Exam Tm Cd"] + info["Exam Date"];
         examSchedule.add(examstr);
