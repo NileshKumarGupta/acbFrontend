@@ -47,6 +47,22 @@ const downloadAll = () => {
           })
           .then((res) => {
             let studenttt = res.data.tt;
+            if (!studenttt) {
+              studenttt = [
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+                "-,-,-,-,-,-,",
+              ];
+            }
             let ttstring = studenttt.join(",");
             let studentCourses = new Set();
             ttstring.split(",").forEach((detail) => {
