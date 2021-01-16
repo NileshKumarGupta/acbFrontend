@@ -115,7 +115,7 @@ document.querySelector("#upStButton").addEventListener("click", () => {
       );
       console.log(data);
 
-      if (!(data[0]["studid"] && data[0]["name"])) return;
+      // if (!(data[0]["studid"] && data[0]["name"])) return;
 
       console.log(data);
       axios
@@ -767,6 +767,24 @@ const getTT = (id, collitp) => {
       currentID = id;
       // make rows according to the table body
       let dayBeginTime = 8;
+      if (!res.data.tt) {
+        console.log("writing res data value");
+        res.data.tt = [
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+          "-,-,-,-,-,-,",
+        ];
+      }
+
       res.data.tt.forEach((hrRow) => {
         let tr = document.createElement("tr");
 
@@ -902,10 +920,12 @@ const getTT = (id, collitp) => {
           sectionAvldiv.appendChild(collit);
         });
       });
-    })
+    });
+  /*
     .catch((err) => {
       console.log(err);
     });
+    */
 };
 
 axios
