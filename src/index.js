@@ -914,13 +914,20 @@ const getTT = (id, collitp) => {
           let collit = document.createElement("a");
           collit.href = "#";
           collit.className = "collection-item";
-          collit.innerText =
-            element.Subject +
-            element.Catalog +
-            " " +
-            element["COURSETITLE"] +
-            " " +
-            element.Section;
+          console.log(element);
+          // collit.innerText =
+          //   element.Subject + element.Catalog + " " + element["Course Title"] || 
+          //   "" + " " + element.Section;
+
+          collit.innerText = element.Subject;
+          collit.innerText += element.Catalog + " ";
+          
+          if(element.hasOwnProperty("Coures Title"))
+            collit.innerText += element["Course Title"];
+          else if(element.hasOwnProperty("COURSE TITLE"))
+            collit.innerText += element["COURSE TITLE"];
+
+          collit.innerText += element.Section;
 
           let addIcon = document.createElement("i");
           addIcon.className = "material-icons";
